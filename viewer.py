@@ -5,15 +5,16 @@ import numpy as np
 import glfw
 from core import Viewer, Shader
 import texture, transform
+import ocean
 
 def main():
     viewer = Viewer()
     print("! Shaders to implement !")
-#    shader = Shader()
+    oceanShader = Shader("ocean.vert", "ocean.frag")
 
     #add all the objects of the scene
     print("! Objects to implement !")
-#    viewer.add()
+    viewer.add(ocean(oceanShader))
 
     #start rendering loop
     viewer.run()
