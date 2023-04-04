@@ -3,14 +3,17 @@
 import OpenGL.GL as GL
 import numpy as np
 import glfw
-import core, texture, transform
+from core import Viewer, Shader
+import texture, transform
 
 def main():
     viewer = Viewer()
-    shader = Shader()
+    print("! Shaders to implement !")
+#    shader = Shader()
 
     #add all the objects of the scene
-    viewer.add()
+    print("! Objects to implement !")
+#    viewer.add()
 
     #start rendering loop
     viewer.run()
