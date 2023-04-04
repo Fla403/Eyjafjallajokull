@@ -15,10 +15,41 @@ class Terrain(core.Mesh):
     """Class for drawing a terrain"""
 
     def __init__(self, shader):
+        width = 3
+        
         self.shader = shader
-        position = np.array(((0, 0, 0), (0, 0, 1), (1, 0, 0), (1, 0, 1)), 'f')
-        color = np.array(((0, 1, 0), (0, 1, 0), (0, 0, 1), (0, 0, 1)), 'f')
-        self.index = np.array((0, 1, 2, 2, 1, 3), np.uint32)
+        position = np.array(((0, 0, 0)), 'f')
+        color = np.array(((.5, .5, .5)), 'f')
+        self.index = np.array(np.uint32)
+
+        np.append(position, np.array(((1, 1, 1)), 'f'))
+        print(position[4])
+
+        for i in range(1, width):
+            for j in range(1, width):
+                np.append(position, ((i/width, 0, j/width)))
+                np.append(color, ((.5, .5, .5)))
+
+        print(position)
+        print(color)
+        # for i in range(position.size):
+        #     print(position[i])
+        #     return
+
+        for i in range(1, width*width):
+            if i%(width-1) == 0:
+                continue
+            if i >= width*(width-1):
+                continue
+            # Adding first triangle indexes
+            np.append(self.index, i)
+            np.append(self.index, i+width)
+            np.append(self.index, i+1)
+            # Adding second triangle indexes
+            np.append(self.index, i+1)
+            np.append(self.index, i+width)
+            np.append(self.index, i+1+width)
+            
 
         attributes = dict(position=position, color=color)
         super().__init__(shader, attributes=attributes)
