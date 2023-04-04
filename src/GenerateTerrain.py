@@ -5,10 +5,8 @@
 
     idée : une grille de points. En chaque point : calcul d'une hauteur
 """
-import OpenGL.GL as GL
 import numpy as np
-import glfw
-import core, texture, transform
+import core
 
 
 class Terrain(core.Mesh):

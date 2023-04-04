@@ -10,7 +10,7 @@ import numpy as np                  # all matrix manipulations & OpenGL args
 import assimpcy                     # 3D resource loader
 
 # our transform functions
-from transform import Trackball, identity
+from src.transform import Trackball, identity
 
 # initialize and automatically terminate glfw on exit
 glfw.init()
@@ -192,7 +192,7 @@ MAX_BONES = 128
 
 # optionally load texture module
 try:
-    from texture import Texture, Textured
+    from src.texture import Texture, Textured
 except ImportError:
     Texture, Textured = None, None
 

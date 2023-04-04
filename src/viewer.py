@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import OpenGL.GL as GL
-import numpy as np
-import glfw
 from core import Viewer, Shader
-import texture, transform
 import ocean
 
 def main():
