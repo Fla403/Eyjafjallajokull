@@ -2,15 +2,17 @@
 
 from core import Viewer, Shader
 from ocean import *
-
+import GenerateTerrain
 
 def main():
     viewer = Viewer()
     # creation of the shaders
     oceanShader = Shader("ocean.vert", "ocean.frag")
+    #terrainShader = Shader("terrain.vert", "terrain.frag")
 
     # add all the objects of the scene
     viewer.add(Ocean(oceanShader))
+    #viewer.add(GenerateTerrain.Terrain(terrainShader))
 
     # start rendering loop
     viewer.run()
