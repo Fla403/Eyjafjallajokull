@@ -10,7 +10,7 @@ import numpy as np                  # all matrix manipulations & OpenGL args
 import assimpcy                     # 3D resource loader
 
 # our transform functions
-from src.transform import Trackball, identity
+from transform import Trackball, identity
 
 # initialize and automatically terminate glfw on exit
 glfw.init()
