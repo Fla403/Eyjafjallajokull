@@ -10,6 +10,31 @@ import glfw
 import numpy as np
 import core
 
+def rand(x, z):
+    return (0.5*np.sin(np.dot((x, z), (12.9898, 78.233))) * 43758.5453)%1
+
+def terrainPoint(x, z):
+     return (np.exp(-(x*x + z*z)/500)*40
+           + np.exp(-(x*x + z*z)/3000)*10
+           - np.exp(-(x*x + z*z)/10)*50
+           + np.exp(-((x+20)*(x+35) + (z+20)*(z+35))/100)*5
+           + np.exp(-((x-25)*(x-25) + (z+25)*(z+25))/50)*10
+           + np.exp(-((x-40)*(x-40) + (z+15)*(z+15))/100)*10
+           + np.exp(-((x-45)*(x-45) + (z+30)*(z+30))/20)*10
+           + np.exp(-((x+45)*(x+45) + (z-30)*(z-30))/20)*10
+           + np.exp(-((x+40)*(x+40) + (z-35)*(z-35))/100)*5
+           + np.exp(-((x+40)*(x+40) + (z)*(z))/100)*10
+           + np.exp(-((x+38)*(x+38) + (z-20)*(z-20))/100)*10
+           + np.exp(-((x+5)*(x+5) + (z-40)*(z-40))/150)*15
+           + np.exp(-((x+25)*(x+25) + (z-35)*(z-35))/50)*12
+           + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
+           + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
+           + rand(x, z)
+           - 3)
+
+def normalize(x, y, z):
+    norm = np.sqrt(x*x + y*y + z*z)
+    return np.array((x/norm, y/norm, z/norm))
 
 class Terrain(core.Mesh):
     """Class for drawing a terrain"""
@@ -28,9 +53,22 @@ class Terrain(core.Mesh):
         position = []
         for i in range(-symSizeMesh, symSizeMesh+1):
             for j in range(-symSizeMesh, symSizeMesh+1):
-                position.append(np.array([i*scale, 0, j*scale], dtype='f'))
+                position.append(np.array([i*scale, terrainPoint(i*scale, j*scale), j*scale], dtype='f'))
         # print(position)
 
+        normal = []
+        for i in range(len(position)-sizeMesh-1):
+            v1 = position[i+1] - position[i]
+            v2 = position[i+1+sizeMesh] - position[i]
+            norm = -np.cross(v1, v2)
+            norm = normalize(norm[0], norm[1], norm[2])
+            normal.append(np.array(norm, dtype='f'))
+
+            # v3 = position[i+sizeMesh] - position[i+1+sizeMesh]
+            # v4 = position[i+1] - position[i+1+sizeMesh]
+            # norm2 = -np.cross(v3, v4)
+            # norm2 = normalize(norm2[0], norm2[1], norm[2])
+            # normal.append(np.array(norm2, 'f'))
 
         # Index creation
         index = []
@@ -44,18 +82,21 @@ class Terrain(core.Mesh):
                 index.append(np.array(k*sizeMesh+l+sizeMesh+1, dtype=np.uint32))
                 index.append(np.array(k*sizeMesh+l+sizeMesh, dtype=np.uint32))
 
-        #index = np.array((0, 1, 4, 0, 4, 3, 1, 2, 5, 1, 5, 4, 3, 4, 7, 3, 7, 6, 4, 5, 8, 4, 8, 7), np.uint32)
+        # self.color = (.3, .3, .3)
 
-        self.color = (.3, .3, .3)
-        attributes = dict(position=position)
+        color = []
+        for i in range(-symSizeMesh, symSizeMesh+1):
+            for j in range(-symSizeMesh, symSizeMesh+1):
+                color.append(np.array([.3, .3, .3], dtype='f'))
+        attributes = dict(position=position, color=color, normal=normal)
 
         uniforms = dict(
             k_d=('COLOR_DIFFUSE', (1, 1, 1)),
             k_s=('COLOR_SPECULAR', (1, 1, 1)),
-            k_a=('COLOR_AMBIENT', (0, 0, 0)),
+            k_a=('COLOR_AMBIENT', (0.5, .5, .5)),
             s=('SHININESS', 16.),
         )
-        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, uniforms=uniforms)
+        super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms)
 
     def draw(self, **_args):
         super().draw(**_args)
