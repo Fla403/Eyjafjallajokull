@@ -28,7 +28,7 @@ void main() {
     vec3 finalPosition = position;
     vec2 pos = vec2(position.x, position.z);
     finalPosition.y = exp(-(position.x*position.x + position.z*position.z)/500)*40
-                    + exp(-(position.x*position.x + position.z*position.z)/2000)*10
+                    + exp(-(position.x*position.x + position.z*position.z)/3000)*10
                     - exp(-(position.x*position.x + position.z*position.z)/10)*50
                     + exp(-((position.x+20)*(position.x+35) + (position.z+20)*(position.z+35))/100)*5
                     + exp(-((position.x-25)*(position.x-25) + (position.z+25)*(position.z+25))/50)*10
@@ -41,6 +41,7 @@ void main() {
                     + exp(-((position.x+5)*(position.x+5) + (position.z-40)*(position.z-40))/150)*15
                     + exp(-((position.x+25)*(position.x+25) + (position.z-35)*(position.z-35))/50)*12
                     + exp(-((position.x+22)*(position.x+22) + (position.z-45)*(position.z-45))/10)*8
+                    + exp(-((position.x-22)*(position.x-22) + (position.z+45)*(position.z+45))/1000)*3
                     + rand(pos)
                     - 3;
     
@@ -53,9 +54,11 @@ void main() {
 
     if(finalPosition.y > 35) {
         fragment_color = volcanoTop*coeff;
+        finalPosition.y += 2*rand(pos);
     }
     else if(finalPosition.y > 15) {
         fragment_color = volcano*coeff;
+        finalPosition.y += 2*rand(pos);
     }
     else if(finalPosition.y > 2) {
         fragment_color = grass*coeff;
