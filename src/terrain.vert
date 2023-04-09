@@ -23,12 +23,7 @@ void main() {
     // initialize the global color
     // fragment_color = color;
     
-    vec4 w_position4 = model * vec4(position, 1.0);
-    gl_Position = projection * view * w_position4;
-    w_position = w_position4.xyz / w_position4.w;
-
-    mat3 nit_matrix = transpose(inverse(mat3(model)));
-    w_normal = normalize(nit_matrix * normal);
+    
 
     vec3 finalPosition = position;
     vec2 pos = vec2(position.x, position.z);
@@ -42,6 +37,10 @@ void main() {
                     + exp(-((position.x+45)*(position.x+45) + (position.z-30)*(position.z-30))/20)*10
                     + exp(-((position.x+40)*(position.x+40) + (position.z-35)*(position.z-35))/100)*5
                     + exp(-((position.x+40)*(position.x+40) + (position.z)*(position.z))/100)*10
+                    + exp(-((position.x+38)*(position.x+38) + (position.z-20)*(position.z-20))/100)*10
+                    + exp(-((position.x+5)*(position.x+5) + (position.z-40)*(position.z-40))/150)*15
+                    + exp(-((position.x+25)*(position.x+25) + (position.z-35)*(position.z-35))/50)*12
+                    + exp(-((position.x+22)*(position.x+22) + (position.z-45)*(position.z-45))/10)*8
                     + rand(pos)
                     - 3;
     
@@ -50,21 +49,29 @@ void main() {
     vec3 volcanoTop = vec3(0.01, 0.01, 0.01);
     vec3 volcano = vec3(.1, .1, .1);
 
+    float coeff = .5;
+
     if(finalPosition.y > 35) {
-        fragment_color = volcanoTop;
+        fragment_color = volcanoTop*coeff;
     }
     else if(finalPosition.y > 15) {
-        fragment_color = volcano;
+        fragment_color = volcano*coeff;
     }
     else if(finalPosition.y > 2) {
-        fragment_color = grass;
+        fragment_color = grass*coeff;
     }
     else {
-        fragment_color = beach;
+        fragment_color = beach*coeff;
     }
 
+    vec4 w_position4 = model * vec4(finalPosition, 1.0);
+    gl_Position = projection * view * w_position4;
+    w_position = w_position4.xyz / w_position4.w;
+
+    mat3 nit_matrix = transpose(inverse(mat3(model)));
+    w_normal = normalize(nit_matrix * normal);
 
     // finalPosition.y = sin(position.x+position.z);
     // tell OpenGL how to transform the vertex to clip coordinates
-    gl_Position = projection * view * vec4(finalPosition, 1);
+    // gl_Position = projection * view * vec4(finalPosition, 1);
 }

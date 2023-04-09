@@ -46,9 +46,16 @@ class Terrain(core.Mesh):
 
         #index = np.array((0, 1, 4, 0, 4, 3, 1, 2, 5, 1, 5, 4, 3, 4, 7, 3, 7, 6, 4, 5, 8, 4, 8, 7), np.uint32)
 
-        self.color = (.4, .4, .4)
+        self.color = (.3, .3, .3)
         attributes = dict(position=position)
-        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, light_dir=(0,-1,0))
+
+        uniforms = dict(
+            k_d=('COLOR_DIFFUSE', (1, 1, 1)),
+            k_s=('COLOR_SPECULAR', (1, 1, 1)),
+            k_a=('COLOR_AMBIENT', (0, 0, 0)),
+            s=('SHININESS', 16.),
+        )
+        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, uniforms=uniforms)
 
     def draw(self, **_args):
         super().draw(**_args)

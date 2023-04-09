@@ -192,7 +192,7 @@ MAX_BONES = 128
 
 # optionally load texture module
 try:
-    from src.texture import Texture, Textured
+    from texture import Texture, Textured
 except ImportError:
     Texture, Textured = None, None
 
