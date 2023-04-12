@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 from core import Viewer, Shader
-from src.ocean import *
-from src import GenerateTerrain
+from ocean import *
+import GenerateTerrain
 from playsound import playsound
+from craby import Craby
 
 
 def main():
