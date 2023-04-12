@@ -6,12 +6,14 @@
     idée : une grille de points. En chaque point : calcul d'une hauteur
 """
 import OpenGL.GL as GL
-import glfw    
+import glfw
 import numpy as np
-import core
+from core import Mesh
+
 
 def rand(x, z):
-    return (0.5*np.sin(np.dot((x, z), (12.9898, 78.233))) * 43758.5453)%1
+    return (0.5 * np.sin(np.dot((x, z), (12.9898, 78.233))) * 43758.5453) % 1
+
 
 def terrainPoint(x, z):
      return (np.exp(-(x*x + z*z)/500)*40
@@ -32,34 +34,36 @@ def terrainPoint(x, z):
            + rand(x, z)
            - 3)
 
-def normalize(x, y, z):
-    norm = np.sqrt(x*x + y*y + z*z)
-    return np.array((x/norm, y/norm, z/norm))
 
-class Terrain(core.Mesh):
+def normalize(x, y, z):
+    norm = np.sqrt(x * x + y * y + z * z)
+    return np.array((x / norm, y / norm, z / norm))
+
+
+class Terrain(Mesh):
     """Class for drawing a terrain"""
 
     def __init__(self, shader):
         sizeMesh = 181
-        #We need only an odd amount of points on a side
-        if sizeMesh%2 == 0:
-            sizeMesh+=1
+        # We need only an odd amount of points on a side
+        if sizeMesh % 2 == 0:
+            sizeMesh += 1
 
-        symSizeMesh = sizeMesh//2
+        symSizeMesh = sizeMesh // 2
 
         scale = 1
 
         # Position creation
         position = []
-        for i in range(-symSizeMesh, symSizeMesh+1):
-            for j in range(-symSizeMesh, symSizeMesh+1):
-                position.append(np.array([i*scale, terrainPoint(i*scale, j*scale), j*scale], dtype='f'))
+        for i in range(-symSizeMesh, symSizeMesh + 1):
+            for j in range(-symSizeMesh, symSizeMesh + 1):
+                position.append(np.array([i * scale, terrainPoint(i * scale, j * scale), j * scale], dtype='f'))
         # print(position)
 
         normal = []
-        for i in range(len(position)-sizeMesh-1):
-            v1 = position[i+1] - position[i]
-            v2 = position[i+1+sizeMesh] - position[i]
+        for i in range(len(position) - sizeMesh - 1):
+            v1 = position[i + 1] - position[i]
+            v2 = position[i + 1 + sizeMesh] - position[i]
             norm = -np.cross(v1, v2)
             norm = normalize(norm[0], norm[1], norm[2])
             normal.append(np.array(norm, dtype='f'))
@@ -72,22 +76,23 @@ class Terrain(core.Mesh):
 
         # Index creation
         index = []
-        for k in range(sizeMesh-1):
+        for k in range(sizeMesh - 1):
             for l in range(sizeMesh - 1):
-                index.append(np.array(k*sizeMesh+l, dtype=np.uint32))
-                index.append(np.array(k*sizeMesh+l+1, dtype=np.uint32))
-                index.append(np.array(k*sizeMesh+l+sizeMesh+1, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l + 1, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l + sizeMesh + 1, dtype=np.uint32))
 
-                index.append(np.array(k*sizeMesh+l, dtype=np.uint32))
-                index.append(np.array(k*sizeMesh+l+sizeMesh+1, dtype=np.uint32))
-                index.append(np.array(k*sizeMesh+l+sizeMesh, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l + sizeMesh + 1, dtype=np.uint32))
+                index.append(np.array(k * sizeMesh + l + sizeMesh, dtype=np.uint32))
 
         # self.color = (.3, .3, .3)
 
         color = []
-        for i in range(-symSizeMesh, symSizeMesh+1):
-            for j in range(-symSizeMesh, symSizeMesh+1):
+        for i in range(-symSizeMesh, symSizeMesh + 1):
+            for j in range(-symSizeMesh, symSizeMesh + 1):
                 color.append(np.array([.3, .3, .3], dtype='f'))
+        
         attributes = dict(position=position, color=color, normal=normal)
 
         uniforms = dict(
@@ -100,4 +105,3 @@ class Terrain(core.Mesh):
 
     def draw(self, **_args):
         super().draw(**_args)
-        

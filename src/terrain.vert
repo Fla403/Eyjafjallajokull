@@ -54,11 +54,9 @@ void main() {
 
     if(finalPosition.y > 35) {
         fragment_color = volcano*coeff;
-        finalPosition.y += 2*rand(pos);
     }
     else if(finalPosition.y > 15) {
         fragment_color = volcano*coeff;
-        finalPosition.y += 2*rand(pos);
     }
     else if(finalPosition.y > 2) {
         fragment_color = grass*coeff;
