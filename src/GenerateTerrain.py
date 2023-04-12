@@ -29,8 +29,8 @@ def terrainPoint(x, z):
            + np.exp(-((x+25)*(x+25) + (z-35)*(z-35))/50)*12
            + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
-           + rand(x, z)
-           - 3)
+           + 0.5*rand(x, z)
+           - 2.5)
 
 def normalize(x, y, z):
     norm = np.sqrt(x*x + y*y + z*z)
@@ -88,6 +88,7 @@ class Terrain(core.Mesh):
         for i in range(-symSizeMesh, symSizeMesh+1):
             for j in range(-symSizeMesh, symSizeMesh+1):
                 color.append(np.array([.3, .3, .3], dtype='f'))
+        
         attributes = dict(position=position, color=color, normal=normal)
 
         uniforms = dict(
