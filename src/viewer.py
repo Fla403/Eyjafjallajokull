@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 from core import Viewer, Shader
-from ocean import *
-import GenerateTerrain
+from src.ocean import *
+from src import GenerateTerrain
+from playsound import playsound
 
 
 def main():
+
     viewer = Viewer()
     # creation of the shaders
     oceanShader = Shader("ocean.vert", "ocean.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
+    # skyboxShader = Shader("skybox.vert", "skybox.frag")
 
     # creation of the light direction
     lightDir = (0, -1, 0)
@@ -23,4 +26,5 @@ def main():
 
 
 if __name__ == '__main__':
+    playsound("CrabRave.mp3", False)
     main()
