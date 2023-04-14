@@ -16,8 +16,8 @@ def rand(x, z):
 
 
 def terrainPoint(x, z):
-     return (np.exp(-(x*x + z*z)/500)*40
-           + np.exp(-(x*x + z*z)/3000)*10
+    height =(np.exp(-(x*x + z*z)/500)*40
+           + np.exp(-(x*x + z*z)/2500)*20
            - np.exp(-(x*x + z*z)/10)*50
            + np.exp(-((x+20)*(x+35) + (z+20)*(z+35))/100)*5
            + np.exp(-((x-25)*(x-25) + (z+25)*(z+25))/50)*10
@@ -31,8 +31,12 @@ def terrainPoint(x, z):
            + np.exp(-((x+25)*(x+25) + (z-35)*(z-35))/50)*12
            + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
-           + rand(x, z)
+           + 0.5*rand(x, z)
            - 3)
+    # if(x*x + z*z <= 5000 + rand(x, z)):
+        # height += 3
+
+    return height
 
 
 def normalize(x, y, z):
