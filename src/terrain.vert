@@ -55,7 +55,7 @@ void main() {
     if(finalPosition.y > 35) {
         fragment_color = volcano*coeff;
     }
-    else if(finalPosition.y > 15) {
+    else if(finalPosition.y > 18) {
         fragment_color = volcano*coeff;
     }
     else if(finalPosition.y > 4) {

@@ -5,8 +5,8 @@ uniform vec3 global_color;
 
 uniform vec3 light_dir = vec3(10, -1, 0);
 uniform vec3 k_d = vec3(.05, .05, .05);
-uniform vec3 k_a = vec3(.1, .1, .1);
-uniform vec3 k_s = vec3(.1, .1, .1);
+uniform vec3 k_a = vec3(0, 0, 0);
+uniform vec3 k_s = vec3(.15, .15, .15);
 
 uniform float s = .5;
 uniform vec3 w_camera_position;
