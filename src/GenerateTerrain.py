@@ -17,8 +17,8 @@ def rand(x, z):
 
 def terrainPoint(x, z):
     height =(np.exp(-(x*x + z*z)/500)*40
-           + np.exp(-(x*x + z*z)/3500)*15
-           - np.exp(-(x*x + z*z)/10)*10
+           + np.exp(-(x*x + z*z)/4500)*10
+           - np.exp(-(x*x + z*z)/10)*50
            + np.exp(-((x+20)*(x+35) + (z+20)*(z+35))/100)*5
            + np.exp(-((x-25)*(x-25) + (z+25)*(z+25))/50)*10
            + np.exp(-((x-40)*(x-40) + (z+15)*(z+15))/100)*10
