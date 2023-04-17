@@ -33,9 +33,9 @@ def terrainPoint(x, z):
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
            + 0.5*rand(x, z)
            - 2)
-    if(x*x + z*z >= 7000):
-        # height += rand(x, z)
-        height -= 15
+    # if(x*x + z*z >= 12000):
+    #     # height += rand(x, z)
+    #     height -= 15
     # if(height >= 19):
         # height += 1.2*rand(x, z)
 
@@ -112,4 +112,5 @@ class Terrain(Mesh):
         super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms)
 
     def draw(self, **_args):
+        GL.glEnable(GL.GL_DEPTH_TEST)
         super().draw(**_args)

@@ -378,13 +378,20 @@ class Viewer(Node):
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
             win_size = glfw.get_window_size(self.win)
-
             # draw our scene objects
             cam_pos = np.linalg.inv(self.trackball.view_matrix())[:, 3]
+
+            viewSkybox = self.trackball.view_matrix();
+
+            viewSkybox[0][3] = 0
+            viewSkybox[1][3] = 0
+            viewSkybox[2][3] = 0
+
             self.draw(view=self.trackball.view_matrix(),
                       projection=self.trackball.projection_matrix(win_size),
                       model=identity(),
-                      w_camera_position=cam_pos)
+                      w_camera_position=cam_pos,
+                      viewSkybox=viewSkybox)
 
             # flush render commands, and swap draw buffers
             glfw.swap_buffers(self.win)
