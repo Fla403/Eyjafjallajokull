@@ -18,6 +18,19 @@ float rand(vec2 co) {
     return fract(0.5*sin(0.02*dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+float alphaFog(float dist) {
+    float fogMin = 100.0;
+    float fogMax = 600.0;
+
+    if(dist < fogMin) {
+        return 0.0;
+    }
+    if(dist > fogMax) {
+        return 1.0;
+    }
+
+    return 1 - (fogMax - dist)/(fogMax - fogMin);
+}
 
 void main() {
     // initialize the global color
@@ -55,10 +68,10 @@ void main() {
     if(finalPosition.y > 35) {
         fragment_color = volcano*coeff;
     }
-    else if(finalPosition.y > 15) {
+    else if(finalPosition.y > 18) {
         fragment_color = volcano*coeff;
     }
-    else if(finalPosition.y > 4) {
+    else if(finalPosition.y > 8) {
         fragment_color = grass*coeff;
     }
     else {
@@ -72,7 +85,13 @@ void main() {
     mat3 nit_matrix = transpose(inverse(mat3(model)));
     w_normal = normalize(nit_matrix * normal);
 
-    // finalPosition.y = sin(position.x+position.z);
-    // tell OpenGL how to transform the vertex to clip coordinates
-    // gl_Position = projection * view * vec4(finalPosition, 1);
+    // vec3 cameraPosition;
+    // vec4 cv = vec4(0, 0, 0, 1);
+    
+    // cameraPosition = vec3(inverse(view)*cv);
+
+    // float d = distance(position, cameraPosition);
+    // float alpha = alphaFog(d);
+    // vec3 fogColor = vec3(0.5, 0.5, 0.5);
+    // fragment_color = mix(fragment_color, fogColor, alpha);
 }

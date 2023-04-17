@@ -23,6 +23,20 @@ in float onSide;
 // output fragment color for OpenGL
 out vec4 out_color;
 
+float alphaFog(float dist) {
+    float fogMin = 70.0;
+    float fogMax = 250.0;
+
+    if(dist < fogMin) {
+        return 0.0;
+    }
+    if(dist > fogMax) {
+        return 1.0;
+    }
+
+    return 1 - (fogMax - dist)/(fogMax - fogMin);
+}
+
 void main() {
     //out_color = vec4(fragment_color + global_color, 1);
 
@@ -51,5 +65,9 @@ void main() {
         out_color = vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1);
     }
 
+    float d = distance(w_position, w_camera_position);
+    float alpha = alphaFog(d);
+    vec4 fogColor = vec4(0.3, 0.3, 0.3, 1);
+    out_color += mix(out_color, fogColor, alpha);
 //    out_color = vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1);
 }

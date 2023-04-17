@@ -81,12 +81,12 @@ void main() {
     vec3 downNeighbour = position + vec3(0,0,-margin);
 
     // Initialize the coefficient of the first wave
-    float firstWavelength = 40;
-    float firstSteepness = 0.15; //Must be between 0 and 1
+    float firstWavelength = 35;
+    float firstSteepness = 0.45; //Must be between 0 and 1
     vec2 firstDirection = normalize(vec2(1, 1));
     // Initialize the coefficient of the second wave
-    float secondWavelength = 31;
-    float secondSteepness = 0.15; //Must be between 0 and 1
+    float secondWavelength = 28;
+    float secondSteepness = 0.25; //Must be between 0 and 1
     vec2 secondDirection = normalize(vec2(1, 0.6));
     // Initialize the coefficient of the second wave
     float thirdWavelength = 18;
@@ -146,6 +146,12 @@ void main() {
 
     w_normal = (model * vec4(normal, 1)).xyz / (model * vec4(normal, 1)).w;
     w_position = (model * vec4(thirdPosition, 1)).xyz / (model * vec4(thirdPosition, 1)).w;
+
+    thirdPosition.y -= exp(-(thirdPosition.x*thirdPosition.x + thirdPosition.z*thirdPosition.z)/500)*50000;
+
+    if (thirdPosition.y < -10){
+        thirdPosition.y = -10;
+    }
 
     gl_Position = projection * view * model *vec4(thirdPosition, 1); //TODO Besoin de la matrice model ou pas ?
 }

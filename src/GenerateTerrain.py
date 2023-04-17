@@ -12,12 +12,12 @@ from core import Mesh
 
 
 def rand(x, z):
-    return (0.5 * np.sin(np.dot((x, z), (12.9898, 78.233))) * 43758.5453) % 1
+    return (0.5 * np.sin(np.dot((x, z), (12.9898, 78.233))*500) * 43758.5453) % 1
 
 
 def terrainPoint(x, z):
     height =(np.exp(-(x*x + z*z)/500)*40
-           + np.exp(-(x*x + z*z)/2500)*20
+           + np.exp(-(x*x + z*z)/4500)*10
            - np.exp(-(x*x + z*z)/10)*50
            + np.exp(-((x+20)*(x+35) + (z+20)*(z+35))/100)*5
            + np.exp(-((x-25)*(x-25) + (z+25)*(z+25))/50)*10
@@ -32,9 +32,12 @@ def terrainPoint(x, z):
            + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
            + 0.5*rand(x, z)
-           - 3)
-    # if(x*x + z*z <= 5000 + rand(x, z)):
-        # height += 3
+           - 2)
+    # if(x*x + z*z >= 12000):
+    #     # height += rand(x, z)
+    #     height -= 15
+    # if(height >= 19):
+        # height += 1.2*rand(x, z)
 
     return height
 
@@ -49,13 +52,14 @@ class Terrain(Mesh):
 
     def __init__(self, shader):
         sizeMesh = 181
+        scale = 1
+        
         # We need only an odd amount of points on a side
         if sizeMesh % 2 == 0:
             sizeMesh += 1
 
         symSizeMesh = sizeMesh // 2
 
-        scale = 1
 
         # Position creation
         position = []
@@ -108,4 +112,5 @@ class Terrain(Mesh):
         super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms)
 
     def draw(self, **_args):
+        GL.glEnable(GL.GL_DEPTH_TEST)
         super().draw(**_args)
