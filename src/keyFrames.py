@@ -6,9 +6,9 @@ import OpenGL.GL as GL
 import glfw
 import numpy as np
 
-from core import Node
+from core import Node, vec
 from transform import (lerp, quaternion_slerp, quaternion_matrix, translate, rotate,
-                       scale, identity)
+                       scale, identity, quaternion)
 
 
 # -------------- Keyframing Utilities TP6 ------------------------------------
@@ -17,8 +17,8 @@ class KeyFrames:
     def __init__(self, time_value_pairs, interpolation_function=lerp):
         if isinstance(time_value_pairs, dict):
             time_value_pairs = time_value_pairs.items()
-        keyframes = sorted(((key[0], key[1]) for key in time_value_pairs))
-        self.times, self.values = zip(*keyframes)
+        self.keyframes = sorted(((key[0], key[1]) for key in time_value_pairs))
+        self.times, self.values = zip(*self.keyframes)
         self.interpolate = interpolation_function
 
     def value(self, time):
@@ -33,6 +33,10 @@ class KeyFrames:
 
         f = (time - self.times[t_i]) / (self.times[t_i + 1] - self.times[t_i])
         return self.interpolate(self.values[t_i], self.values[t_i + 1], f)
+
+    def add(self, time, value):
+        self.keyframes.append((time, value))
+        self.times, self.values = zip(*self.keyframes)
 
 
 class TransformKeyFrames:
@@ -52,11 +56,17 @@ class TransformKeyFrames:
 
         return translate_mat @ rotate_mat @ scale_mat
 
+    def addTranslate(self, time, translation):
+        self.translate_keyFrames.add(time, translation)
+    
+    def addRotate(self, time, rotation):
+        self.rotate_keyFrames.add(time, rotation)
+
 
 
 class KeyFrameControlNode(Node):
     """ Place node with transform keys above a controlled subtree """
-    def __init__(self, trans_keys, rot_keys, scale_keys, transform=identity()):
+    def __init__(self, trans_keys={0: vec(0,0,0), 10: vec(0,0,0)}, rot_keys={0: quaternion(), 10: quaternion()}, scale_keys={0: vec(1,1,1),10: vec(1,1,1)}, transform=identity()):
         super().__init__(transform=transform)
         self.keyframes = TransformKeyFrames(trans_keys, rot_keys, scale_keys)
 
@@ -64,3 +74,9 @@ class KeyFrameControlNode(Node):
         """ When redraw requested, interpolate our node transform from keys """
         self.transform = self.keyframes.value(glfw.get_time())
         super().draw(primitives=primitives, **uniforms)
+    
+    def addTranslate(self, time, translation):
+        self.keyframes.addTranslate(time, translation)
+
+    def addRotate(self, time, rotation):
+        self.keyframes.addRotate(time, rotation)

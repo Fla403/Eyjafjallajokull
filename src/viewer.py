@@ -4,11 +4,12 @@ from core import Viewer, Shader, Node
 from ocean import *
 import GenerateTerrain
 from playsound import playsound
-from craby import Craby
+from craby import Craby, Leg
 from transform import translate, scale, identity, quaternion
 from texture import Texture, Textured
 from itertools import cycle
 from keyFrames import KeyFrameControlNode
+from sphere import Sphere
 
 
 
@@ -50,9 +51,7 @@ class TexturedPlane(Textured):
         super().__init__(mesh, diffuse_map=texture1)
 
 
-def vec(*iterable):
-    """ shortcut to make numpy vector of any iterable(tuple...) or vector """
-    return np.asarray(iterable if len(iterable) > 1 else iterable[0], 'f')
+
 
 def main():
     viewer = Viewer()
@@ -66,27 +65,30 @@ def main():
     # creation of the light direction
     lightDir = (-1, -1, 2)
     # add all the objects of the scene
-    viewer.add(TexturedPlane(skyboxShader, "skybox/front.jpg", 1))
-    viewer.add(TexturedPlane(skyboxShader, "skybox/back.png", 2))
-    viewer.add(TexturedPlane(skyboxShader, "skybox/left.png", 3))
-    viewer.add(TexturedPlane(skyboxShader, "skybox/right.png", 4))
-    viewer.add(TexturedPlane(skyboxShader, "skybox/bottom.png", 5))
-    viewer.add(TexturedPlane(skyboxShader, "skybox/top.png", 6))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/front.jpg", 1))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/back.png", 2))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/left.png", 3))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/right.png", 4))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/bottom.png", 5))
+    #viewer.add(TexturedPlane(skyboxShader, "skybox/top.png", 6))
 
     #viewer.add(Ocean(oceanShader, 551, lightDir))
     #viewer.add(GenerateTerrain.Terrain(terrainShader))
 
-    """sphere = Sphere(crabyShader, 3, (0.2,0.2,0.2))
+    sphere = Sphere(crabyShader, 3, (0.2,0.2,0.2))
     node = Node(transform=scale(0.1,0.1,0.1))
     node.add(sphere)
-    viewer.add(node)"""
+    viewer.add(node)
 
     craby = Craby()
-    #crabyNode = Node(transform=translate(40,10,50) @ scale(5))
-    #crabyNode.add(craby)
-    #viewer.add(crabyNode)
+    crabyNode = Node(transform=scale(5))
+    crabyNode.add(craby)
+    viewer.add(crabyNode)
 
-    translate_keys = {0: vec(0,0,0),
+    leg = Leg()
+    #viewer.add(leg.joint3)
+
+    """translate_keys = {0: vec(0,0,0),
                         20: vec(0,5,0),
                         24: vec(0,10,0),
                         26: vec(0,15,0),
@@ -100,6 +102,8 @@ def main():
     crabyAnimatedNode = KeyFrameControlNode(translate_keys, rotate_keys, scale_keys)
     crabyAnimatedNode.add(craby)
     viewer.add(crabyAnimatedNode)
+
+    crabyAnimatedNode.addTranslate(40, vec(0,0,0))"""
 
     # start rendering loop
     viewer.run()
