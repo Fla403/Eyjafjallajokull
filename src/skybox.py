@@ -1,117 +1,43 @@
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from PIL import Image
+import OpenGL.GL as GL
+from itertools import cycle
 import numpy as np
-
-class Skybox:
-
-    def __init__(self):
-        cubeMapTarget = [
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-        ]
-
-        textureImage = [Image.open("skybox/left.bmp"), Image.open("skybox/right.bmp"), Image.open("skybox/back.bmp"),
-                        Image.open("skybox/front.bmp"), Image.open("skybox/bottom.bmp"), Image.open("skybox/top.bmp")]
-
-        self.cubeMapTextureID = glGenTextures(1)
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, self.cubeMapTextureID)
-
-        for i in range(6):
-            textureImage[i] = textureImage[i].convert("RGB")
-
-            width, height = textureImage[i].size
-
-            data = textureImage[i].tobytes()
-
-            glTexImage2D(cubeMapTarget[i], 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data)
-
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-
-    def draw(self, cameraPitch, cameraYaw):
-
-        size = 1
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, self.cubeMapTextureID)
-
-        # glPushMatrix()
-        # glLoadIdentity()
-        # glRotatef(cameraPitch, 1.0, 0.0, 0.0)
-        # glRotatef(cameraYaw, 1.0, 0.0, 0.0)
-
-        glBegin(GL_TRIANGLE_STRIP)
-        glTexCoord3f(-size, -size, -size)
-        glVertex3f(-size, -size, -size)
-        glTexCoord3f(-size, size, -size)
-        glVertex3f(-size, size, -size)
-        glTexCoord3f(-size, -size, size)
-        glVertex3f(-size, -size, size)
-        glTexCoord3f(-size, size, size)
-        glVertex3f(-size, size, size)
-        glEnd()
-
-        # glBegin(GL_TRIANGLE_STRIP)
-        # glTexCoord3f(size, -size, -size)
-        # glVertex3f(size, -size, -size)
-        # glTexCoord3f(size, -size, size)
-        # glVertex3f(size, -size, size)
-        # glTexCoord3f(size, size, -size)
-        # glVertex3f(size, size, -size)
-        # glTexCoord3f(size, size, size)
-        # glVertex3f(size, size, size)
-        # glEnd()
-        #
-        # glBegin(GL_TRIANGLE_STRIP)
-        # glTexCoord3f(-size, -size, -size)
-        # glVertex3f(-size, -size, -size)
-        # glTexCoord3f(-size, -size, size)
-        # glVertex3f(-size, -size, size)
-        # glTexCoord3f(size, -size, -size)
-        # glVertex3f(size, -size, -size)
-        # glTexCoord3f(size, -size, size)
-        # glVertex3f(size, -size, size)
-        # glEnd()
-        #
-        # glBegin(GL_TRIANGLE_STRIP)
-        # glTexCoord3f(-size, size, -size)
-        # glVertex3f(-size, size, -size)
-        # glTexCoord3f(size, size, -size)
-        # glVertex3f(size, size, -size)
-        # glTexCoord3f(-size, size, size)
-        # glVertex3f(-size, size, size)
-        # glTexCoord3f(size, size, size)
-        # glVertex3f(size, size, size)
-        # glEnd()
-        #
-        # glBegin(GL_TRIANGLE_STRIP)
-        # glTexCoord3f(-size, -size, -size)
-        # glVertex3f(-size, -size, -size)
-        # glTexCoord3f(size, -size, -size)
-        # glVertex3f(size, -size, -size)
-        # glTexCoord3f(-size, size, -size)
-        # glVertex3f(-size, size, -size)
-        # glTexCoord3f(size, size, -size)
-        # glVertex3f(size, size, -size)
-        # glEnd()
-        #
-        # glBegin(GL_TRIANGLE_STRIP)
-        # glTexCoord3f(-size, -size, size)
-        # glVertex3f(-size, -size, size)
-        # glTexCoord3f(-size, size, size)
-        # glVertex3f(-size, size, size)
-        # glTexCoord3f(size, -size, size)
-        # glVertex3f(size, -size, size)
-        # glEnd()
-        #
-        # glPopMatrix()
+from core import Mesh
+from texture import Texture, Textured
 
 
-        
+class SkyboxSide(Textured):
+    """ Creates a side of the skybox """
+
+    def __init__(self, shader, tex_file, position):
+        # prepare texture modes cycling variables for interactive toggling
+        self.wraps = cycle([GL.GL_REPEAT, GL.GL_MIRRORED_REPEAT,
+                            GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_EDGE])
+        self.filters = cycle([(GL.GL_NEAREST, GL.GL_NEAREST),
+                              (GL.GL_LINEAR, GL.GL_LINEAR),
+                              (GL.GL_LINEAR, GL.GL_LINEAR_MIPMAP_LINEAR)])
+        self.wrap, self.filter = next(self.wraps), next(self.filters)
+        self.file = tex_file
+
+        # setup plane mesh to be textured
+        if position == 1:
+            base_coords = ((-1, -1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1))  # Front
+        elif position == 2:
+            base_coords = ((1, -1, 1), (-1, -1, 1), (-1, 1, 1), (1, 1, 1))  # Back
+        elif position == 3:
+            base_coords = ((-1, 1, -1), (-1, 1, 1), (-1, -1, 1), (-1, -1, -1))  # Left
+        elif position == 4:
+            base_coords = ((1, -1, -1), (1, -1, 1), (1, 1, 1), (1, 1, -1))  # Right
+        elif position == 5:
+            base_coords = ((-1, -1, 1), (1, -1, 1), (1, -1, -1), (-1, -1, -1))  # Bottom
+        else:
+            base_coords = ((-1, 1, -1), (1, 1, -1), (1, 1, 1), (-1, 1, 1))  # Top
+
+        coord_for_tex = ((0, 0), (0, 1), (1, 1), (1, 0))
+
+        scaled = 10000 * np.array(base_coords, np.float32)
+        indices = np.array((0, 1, 2, 0, 2, 3), np.uint32)
+        mesh = Mesh(shader, attributes=dict(position=scaled, tex_coord=coord_for_tex), index=indices)
+
+        # setup & upload texture to GPU, bind it to shader name 'diffuse_map'
+        texture1 = Texture(tex_file, self.wrap, *self.filter)
+        super().__init__(mesh, diffuse_map=texture1)

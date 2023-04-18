@@ -24,8 +24,8 @@ in float onSide;
 out vec4 out_color;
 
 float alphaFog(float dist) {
-    float fogMin = 400.0;
-    float fogMax = 450.0;
+    float fogMin = 70.0;
+    float fogMax = 250.0;
 
     if(dist < fogMin) {
         return 0.0;
@@ -48,15 +48,11 @@ void main() {
     vec3 specular_color = k_s * pow(max(dot(r, v), 0), s);
 
     //Fragment on the crest of a wave
-    if(w_normal.y > 0.99995 && onSide==1){
-        out_color = (vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1))+vec4(1, 1, 1, 1);
+    if(w_normal.y > 0.995 && onSide==1){
+        out_color = (vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1))+vec4(0.8, -0.2, -0.2, 1);
     }
     //Fragment between the crest and the hollow of a wave
-    else if(w_normal.y > 0.9995 && onSide==1){
-        out_color = (vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1))+vec4(0.2, 0.2, 0.2, 1);
-    }
-    //Fragment between the crest and the hollow of a wave
-    else if(w_normal.y > 0.997 && w_normal.y < 0.9985 && onSide==1){
+    else if(w_normal.y > 0.97 && w_normal.y < 0.9985 && onSide==1){
         out_color = (vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1))*0.8;
     }
     //Fragment in the hollow of a wave
@@ -66,6 +62,6 @@ void main() {
 
     float d = distance(w_position, w_camera_position);
     float alpha = alphaFog(d);
-    vec4 fogColor = vec4(0.6, 0.6, 0.6, 1);
+    vec4 fogColor = vec4(0.3, 0.3, 0.3, 1);
     out_color += mix(out_color, fogColor, alpha);
 }

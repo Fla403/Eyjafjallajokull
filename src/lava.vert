@@ -57,24 +57,21 @@ vec3 waveBinormal(vec3 position, vec2 direction, float time, float steepness, fl
 
 void main() {
 
-    float margin = 0.01;
+    float margin = 0.001;
     vec3 leftNeighbour = position + vec3(margin,0,0);
     vec3 rightNeighbour = position + vec3(-margin,0,0);
     vec3 upNeighbour = position + vec3(0,0,margin);
     vec3 downNeighbour = position + vec3(0,0,-margin);
 
     // Initialize the coefficients of the first wave
-    float firstWavelength = 35;
-    float firstSteepness = 0.45; //Must be between 0 and 1
-    vec2 firstDirection = normalize(vec2(1, 1));
+    float firstWavelength = 2;
+    float firstSteepness = 0.5; //Must be between 0 and 1
+    vec2 firstDirection = normalize(vec2(1, 0.3));
     // Initialize the coefficients of the second wave
-    float secondWavelength = 28;
-    float secondSteepness = 0.25; //Must be between 0 and 1
-    vec2 secondDirection = normalize(vec2(1, 0.6));
-    // Initialize the coefficients of the second wave
-    float thirdWavelength = 18;
-    float thirdSteepness = 0.15; //Must be between 0 and 1
-    vec2 thirdDirection = normalize(vec2(1, 1.3));
+    float secondWavelength = 3;
+    float secondSteepness = 0.5; //Must be between 0 and 1
+    vec2 secondDirection = normalize(vec2(0, 1));
+
 
 
     //---------- Compute the first wave ----------
@@ -99,34 +96,23 @@ void main() {
     tangent += waveTangent(secondPosition, secondDirection, time, secondSteepness, secondWavelength, tangent);
     binormal += waveBinormal(secondPosition, secondDirection, time, secondSteepness, secondWavelength, binormal);
 
-    //---------- Compute the third wave ----------
-    vec3 thirdPosition = wavePosition(secondPosition, thirdDirection, time, thirdSteepness, thirdWavelength);
-    leftNeighbour = wavePosition(leftNeighbour, thirdDirection, time, thirdSteepness, thirdWavelength);
-    rightNeighbour = wavePosition(rightNeighbour, thirdDirection, time, thirdSteepness, thirdWavelength);
-    upNeighbour = wavePosition(upNeighbour, thirdDirection, time, thirdSteepness, thirdWavelength);
-    downNeighbour = wavePosition(downNeighbour, thirdDirection, time, thirdSteepness, thirdWavelength);
-
-    tangent += waveTangent(thirdPosition, thirdDirection, time, thirdSteepness, thirdWavelength, tangent);
-    binormal += waveBinormal(thirdPosition, thirdDirection, time, thirdSteepness, thirdWavelength, binormal);
-
     vec3 normal = normalize(cross(binormal, tangent));
 
     // We look if the vertex is in the hollow of the wave or not for toonshading
-    if (leftNeighbour.y < thirdPosition.y || rightNeighbour.y < thirdPosition.y || upNeighbour.y < thirdPosition.y || downNeighbour.y < thirdPosition.y){
+    if (leftNeighbour.y < secondPosition.y || rightNeighbour.y < secondPosition.y || upNeighbour.y < secondPosition.y || downNeighbour.y < secondPosition.y){
         onSide = 1;
     }
     else{
         onSide = 0;
     }
 
-    // We put the wave under the island
-    thirdPosition.y -= exp(-(thirdPosition.x*thirdPosition.x + thirdPosition.z*thirdPosition.z)/500)*50000;
-    if (thirdPosition.y < -10){
-        thirdPosition.y = -10;
+    secondPosition.y -= exp(-(secondPosition.x*secondPosition.x + secondPosition.z*secondPosition.z)/15)*15;
+    if (secondPosition.x*secondPosition.x + secondPosition.z*secondPosition.z > 35){
+        secondPosition.y -= 20;
     }
 
     w_normal = (model * vec4(normal, 1)).xyz / (model * vec4(normal, 1)).w;
-    w_position = (model * vec4(thirdPosition, 1)).xyz / (model * vec4(thirdPosition, 1)).w;
+    w_position = (model * vec4(secondPosition, 1)).xyz / (model * vec4(secondPosition, 1)).w;
 
-    gl_Position = projection * view * model *vec4(thirdPosition, 1);
+    gl_Position = projection * view * model *vec4(secondPosition, 1);
 }

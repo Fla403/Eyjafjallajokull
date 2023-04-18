@@ -3,7 +3,7 @@
 // global color variable
 uniform vec3 global_color;
 
-uniform vec3 light_dir = vec3(10, -1, 0);
+uniform vec3 light_dir = vec3(0, -1, 10);
 uniform vec3 k_d = vec3(.05, .05, .05);
 uniform vec3 k_a = vec3(0, 0, 0);
 uniform vec3 k_s = vec3(.15, .15, .15);
@@ -19,8 +19,8 @@ in vec3 w_position, w_normal;
 out vec4 out_color;
 
 float alphaFog(float dist) {
-    float fogMin = 70.0;
-    float fogMax = 250.0;
+    float fogMin = 400.0;
+    float fogMax = 450.0;
 
     if(dist < fogMin) {
         return 0.0;
@@ -43,7 +43,7 @@ void main() {
 
     float d = distance(w_position, w_camera_position);
     float alpha = alphaFog(d);
-    vec4 fogColor = vec4(0.3, 0.3, 0.3, 1);
+    vec4 fogColor = vec4(0.6, 0.6, 0.6, 1);
 // 
     out_color = vec4(k_a, 1) + vec4(diffuse_color, 1) + vec4(specular_color, 1) + vec4(fragment_color + global_color, 1);
     out_color += mix(out_color, fogColor, alpha);
