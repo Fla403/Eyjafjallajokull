@@ -66,6 +66,6 @@ void main() {
 
     float d = distance(w_position, w_camera_position);
     float alpha = alphaFog(d);
-    vec4 fogColor = vec4(0.5, 0.5, 0.5, 1);
+    vec4 fogColor = vec4(0.6, 0.6, 0.6, 1);
     out_color += mix(out_color, fogColor, alpha);
 }

@@ -31,13 +31,13 @@ def terrainPoint(x, z):
            + np.exp(-((x+25)*(x+25) + (z-35)*(z-35))/50)*12
            + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
-           + 0.5*rand(x, z)
+           + 0.3*rand(x, z)
            - 2)
     # if(x*x + z*z >= 12000):
     #     # height += rand(x, z)
     #     height -= 15
-    # if(height >= 19):
-        # height += 1.2*rand(x, z)
+    if(height >= 19):
+        height += 1.2*rand(x, z)
 
     return height
 
