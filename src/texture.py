@@ -12,7 +12,7 @@ class Texture:
         self.type = tex_type
         try:
             # imports image as a numpy array in exactly right format
-            if tex_file == "skybox/left.png" or tex_file == "skybox/top.png":
+            if tex_file == "skyboxSunset/left.png" or tex_file == "skyboxSunset/top.png":
                 tex = Image.open(tex_file).convert('RGBA').rotate(90)
             else:
                 tex = Image.open(tex_file).convert('RGBA').rotate(270)

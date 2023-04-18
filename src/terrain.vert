@@ -71,7 +71,7 @@ void main() {
     else if(finalPosition.y > 18) {
         fragment_color = volcano*coeff;
     }
-    else if(finalPosition.y > 8) {
+    else if(finalPosition.y > 6) {
         fragment_color = grass*coeff;
     }
     else {

@@ -5,20 +5,20 @@ from core import Mesh
 import numpy as np
 
 
-class Ocean(Mesh):
-    def __init__(self, shader, sizeMesh, lightDir):
+class WaveMesh(Mesh):
+    def __init__(self, shader, sizeMesh, lightDir,
+                 heightOffset=5,
+                 scale=1,
+                 kD=(0.0000, 0.6000, 0.6000),
+                 kA=(0.0000, 0.2000, 0.2000),
+                 kS=(0.8, 0.8, 0.8),
+                 s=100.0000):
 
-        # Parameters of the ocean
-        scale = 1
-        heightOffset = 5
-
-
-        # We need only an odd amount of points on a side
+        # An odd number of points is more convenient
         if sizeMesh % 2 == 0:
             sizeMesh += 1
 
         symSizeMesh = sizeMesh // 2
-
 
         # Position creation
         position = []
@@ -40,7 +40,8 @@ class Ocean(Mesh):
 
         self.color = (.2, .2, 1)
         attributes = dict(position=position)
-        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, time=0.0, light=lightDir, k_d=(0.0000, 0.6000, 0.6000), k_a=(0.0000, 0.2000, 0.2000), k_s=(0.8, 0.8, 0.8), s=100.0000)
+        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, time=0.0, light=lightDir,
+                         k_d=kD, k_a=kA, k_s=kS, s=s)
 
     def draw(self, **_args):
         GL.glEnable(GL.GL_DEPTH_TEST)
