@@ -25,7 +25,7 @@ def main():
 
     # creation of the shaders
     skyboxShader = Shader("skybox.vert", "skybox.frag")
-    oceanShader = Shader("ocean.vert", "ocean.frag")
+    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")
     lavaShader = Shader("lava.vert", "lava.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
     crabyShader = Shader("color.vert", "color.frag")
@@ -50,7 +50,7 @@ def main():
     node.add(sphere)
     viewer.add(node)"""
 
-    for i in range (100):
+    for i in range (50):
         viewer.add(Rocks(rocksShader, lightDir))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
 

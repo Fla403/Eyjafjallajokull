@@ -403,6 +403,7 @@ class Viewer(Node):
             # Poll for and process events
             glfw.poll_events()
 
+
     def on_key(self, _win, key, _scancode, action, _mods):
         """ 'Q' or 'Escape' quits """
         if action == glfw.PRESS or action == glfw.REPEAT:

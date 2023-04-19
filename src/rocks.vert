@@ -38,7 +38,7 @@ void main() {
 
     newPosition = (1.0/2.0)*accel*cyclingTime*cyclingTime + speed*cyclingTime + pos;
 
-    w_normal = normalize(newPosition);
+    w_normal = newPosition;
     w_position = newPosition;
 
     gl_Position = projection * view * model * vec4(newPosition, 1);
