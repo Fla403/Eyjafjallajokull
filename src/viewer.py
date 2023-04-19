@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from core import Viewer, Shader
+from core import Viewer, Shader, Node
 from playsound import playsound
 
 import GenerateTerrain
@@ -8,6 +8,11 @@ from skybox import SkyboxSide
 from waveMesh import WaveMesh
 from craby import Craby
 from rocks import Rocks
+from transform import translate, scale, identity, quaternion
+from keyFrames import KeyFrameControlNode
+from sphere import Sphere
+
+
 
 
 def main():
@@ -40,7 +45,6 @@ def main():
 
     viewer.add(GenerateTerrain.Terrain(terrainShader))
 
-    viewer.add(Craby())
     """sphere = Sphere(crabyShader, 3, (0.2,0.2,0.2))
     node = Node(transform=scale(0.1,0.1,0.1))
     node.add(sphere)
@@ -49,6 +53,28 @@ def main():
     for i in range (100):
         viewer.add(Rocks(rocksShader, lightDir))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
+
+    craby = Craby()
+    crabyNode = Node(transform=translate(28,8,58)@scale(5))
+    crabyNode.add(craby)
+    viewer.add(crabyNode)
+
+    """translate_keys = {0: vec(0,0,0),
+                        20: vec(0,5,0),
+                        24: vec(0,10,0),
+                        26: vec(0,15,0),
+                        28: vec(0,20,0),
+                        30: vec(0,25,0)}
+    rotate_keys = {0: quaternion(),
+                        10: quaternion()}
+    scale_keys = {0: vec(1,1,1),
+                        10: vec(1,1,1)}
+
+    crabyAnimatedNode = KeyFrameControlNode(translate_keys, rotate_keys, scale_keys)
+    crabyAnimatedNode.add(craby)
+    viewer.add(crabyAnimatedNode)
+
+    crabyAnimatedNode.addTranslate(40, vec(0,0,0))"""
 
     # start rendering loop
     viewer.run()

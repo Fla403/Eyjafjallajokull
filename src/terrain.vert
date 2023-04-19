@@ -58,12 +58,12 @@ void main() {
     //                 + rand(pos)
     //                 - 3;
     
-    vec3 beach = vec3(.5, .5, 0);
+    vec3 beach = vec3(.60, .50, 0);
     vec3 grass = vec3(0, .2, 0);
     vec3 volcanoTop = vec3(0.5, 0.01, 0.01);
     vec3 volcano = vec3(.1, .1, .1);
 
-    float coeff = 1.5;
+    float coeff = .6;
 
     if(finalPosition.y > 35) {
         fragment_color = volcano*coeff;

@@ -21,8 +21,8 @@ in float onSide;
 out vec4 out_color;
 
 float alphaFog(float dist) {
-    float fogMin = 70.0;
-    float fogMax = 250.0;
+    float fogMin = 400.0;
+    float fogMax = 450.0;
 
     if(dist < fogMin) {
         return 0.0;
@@ -63,6 +63,6 @@ void main() {
 
     float d = distance(w_position, w_camera_position);
     float alpha = alphaFog(d);
-    vec4 fogColor = vec4(0.3, 0.3, 0.3, 1);
+    vec4 fogColor = vec4(0.6, 0.6, 0.6, 1);
     out_color += mix(out_color, fogColor, alpha);
 }
