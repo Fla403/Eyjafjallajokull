@@ -1,8 +1,6 @@
 #version 330 core
 
 // Global variables
-// Global color variable
-uniform vec3 global_color;
 // Light direction
 uniform vec3 light;
 // Material properties
@@ -17,7 +15,6 @@ uniform vec3 w_camera_position;
 // Infos of vertex
 in vec3 w_normal;
 in vec3 w_position;
-in float onTop;
 in float onSide;
 
 // Output fragment color for OpenGL

@@ -2,7 +2,6 @@
 
 // Input attribute variable, given per vertex
 in vec3 position;
-in vec3 color;
 
 // Global variables
 uniform float time;

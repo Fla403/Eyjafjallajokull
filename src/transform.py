@@ -202,8 +202,8 @@ class Trackball:
 
     def projection_matrix(self, winsize):
         """ Projection matrix with z-clipping range adaptive to distance """
-        z_range = vec(0.1, 100) * self.distance  # proportion to dist
-        return perspective(35, winsize[0] / winsize[1], *z_range)
+        z_range = vec(0.01, 1000) * self.distance  # proportion to dist
+        return perspective(80, winsize[0] / winsize[1], *z_range)
 
     def matrix(self):
         """ Rotational component of trackball position """

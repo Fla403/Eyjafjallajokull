@@ -9,7 +9,6 @@ class SkyboxSide(Textured):
     """ Creates a side of the skybox """
 
     def __init__(self, shader, tex_file, position):
-        # prepare texture modes cycling variables for interactive toggling
         self.wraps = cycle([GL.GL_REPEAT, GL.GL_MIRRORED_REPEAT,
                             GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_EDGE])
         self.filters = cycle([(GL.GL_NEAREST, GL.GL_NEAREST),
@@ -34,7 +33,7 @@ class SkyboxSide(Textured):
 
         coord_for_tex = ((0, 0), (0, 1), (1, 1), (1, 0))
 
-        scaled = 10000 * np.array(base_coords, np.float32)
+        scaled = 100000 * np.array(base_coords, np.float32)
         indices = np.array((0, 1, 2, 0, 2, 3), np.uint32)
         mesh = Mesh(shader, attributes=dict(position=scaled, tex_coord=coord_for_tex), index=indices)
 
