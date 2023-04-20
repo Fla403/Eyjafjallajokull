@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from core import Viewer, Shader, Node
-from playsound import playsound
+#from playsound import playsound
 
 import GenerateTerrain
 from skybox import SkyboxSide
@@ -43,14 +43,14 @@ def main():
 
     viewer.add(WaveMesh(lavaShader, 67, lightDir, heightOffset=44, scale=0.2, kD=(0.92, 0.26, 0), kA=(0.7, 0.3, 0), kS=(0.9, 0.35, 0.35), s=1.5))
 
-    viewer.add(GenerateTerrain.Terrain(terrainShader))
+    viewer.add(GenerateTerrain.Terrain(terrainShader, lightDir))
 
     """sphere = Sphere(crabyShader, 6, (0.2,0.8,0.2))
     node = Node(transform=scale(10))
     node.add(sphere)
     viewer.add(node)"""
 
-    for i in range (50):
+    for i in range (200):
         viewer.add(Rocks(rocksShader, lightDir))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
 

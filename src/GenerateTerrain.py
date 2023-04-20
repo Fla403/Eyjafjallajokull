@@ -50,7 +50,7 @@ def normalize(x, y, z):
 class Terrain(Mesh):
     """Class for drawing a terrain"""
 
-    def __init__(self, shader):
+    def __init__(self, shader, lightDir):
         sizeMesh = 181
         scale = 1
         
@@ -109,7 +109,7 @@ class Terrain(Mesh):
             k_a=('COLOR_AMBIENT', (0.5, .5, .5)),
             s=('SHININESS', 16.),
         )
-        super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms)
+        super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms, light=lightDir)
 
     def draw(self, **_args):
         GL.glEnable(GL.GL_DEPTH_TEST)
