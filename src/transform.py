@@ -202,7 +202,7 @@ class Trackball:
 
     def projection_matrix(self, winsize):
         """ Projection matrix with z-clipping range adaptive to distance """
-        z_range = vec(0.01, 1000) * self.distance  # proportion to dist
+        z_range = vec(0.00001, 1000) * self.distance  # proportion to dist
         return perspective(80, winsize[0] / winsize[1], *z_range)
 
     def matrix(self):

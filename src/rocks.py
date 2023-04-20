@@ -33,9 +33,9 @@ class Rocks(Mesh):
         randomSize = random.uniform(0.05, 0.5)
 
         rock = Sphere(shader, 3, self.color)
-        attributes = dict(position=rock.triangles*randomSize)
+        attributes = dict(position=rock.vertices*randomSize)
 
-        super().__init__(shader, attributes=attributes, global_color=self.color, time=0, light=lightDir,
+        super().__init__(shader, attributes=attributes, index=rock.index, global_color=self.color, time=0, light=lightDir,
                          k_d=kD, k_a=kA, k_s=kS, s=s,
                          posX=self.posX, posY=self.posY, posZ=self.posZ,
                          speedX=self.speedX, speedY=self.speedY, speedZ=self.speedZ,
