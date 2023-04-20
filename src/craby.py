@@ -6,7 +6,7 @@ import numpy as np
 from core import *
 import math
 from transform import translate, identity, rotate, scale, quaternion_from_axis_angle, quaternion
-from sphere import Sphere, deform
+from sphere import Sphere
 from keyFrames import KeyFrameControlNode
 
 
@@ -264,7 +264,6 @@ class Craby(KeyFrameControlNode):
                 self.isMoving = True
                 self.endMove = time+self.jumpDuration
                 self.addTranslate(time, vec(0,0,0))
-                #self.addTranslate(time+self.jumpDuration/2, vec(0,self.elevation,0))
                 self.addTranslate(time+self.jumpDuration/3, vec(0,-0.25,0))
                 self.addTranslate(time+self.jumpDuration*2/3, vec(0,self.elevation,0))
                 self.addTranslate(time+self.jumpDuration, vec(0,0,0))

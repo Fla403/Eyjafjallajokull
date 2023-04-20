@@ -45,14 +45,15 @@ def main():
 
     viewer.add(GenerateTerrain.Terrain(terrainShader))
 
-    """sphere = Sphere(crabyShader, 3, (0.2,0.2,0.2))
-    node = Node(transform=scale(0.1,0.1,0.1))
+    """sphere = Sphere(crabyShader, 6, (0.2,0.8,0.2))
+    node = Node(transform=scale(10))
     node.add(sphere)
     viewer.add(node)"""
 
-    for i in range (100):
+
+    """for i in range (100):
         viewer.add(Rocks(rocksShader, lightDir))
-        viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
+        viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))"""
 
     craby = Craby()
     crabyNode = Node(transform=translate(28,8,58)@scale(5))
@@ -81,5 +82,5 @@ def main():
 
 
 if __name__ == '__main__':
-    playsound("CrabRave.mp3", False)
+    #playsound("CrabRave.mp3", False)
     main()
