@@ -45,7 +45,7 @@ class WaveMesh(Mesh):
 
         self.color = (.2, .2, 1)
         attributes = dict(position=position)
-        super().__init__(shader, attributes=attributes, index=index, global_color=self.color, time=0.0, light=lightDir,
+        super().__init__(shader, attributes=attributes, index=index, time=0.0, light=lightDir,
                          k_d=kD, k_a=kA, k_s=kS, s=s)
 
     def draw(self, **_args):
