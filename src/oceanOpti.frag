@@ -20,7 +20,7 @@ in vec3 w_position;
 out vec4 out_color;
 
 float alphaFog(float dist) {
-    float fogMin = 400.0;
+    float fogMin = 250.0;
     float fogMax = 450.0;
 
     if(dist < fogMin) {
