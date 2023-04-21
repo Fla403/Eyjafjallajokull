@@ -1,20 +1,39 @@
 # Our implementation
+## Resume
+
+Creation of an island with a volcano and a beach on which lives Craby which can move, jump and smile. 
+The island is surrounded by an ocean simulation and a skybox of a sunset.
+If you go far from the island, fog will appear. 
+The volcano contains lava simulation and throws particles.
 
 ## Keyboard control for Craby
 
 w : forward
+
 x : move backwards
+
 q : move to the left
+
 d : move to the right
+
 left arrow : turn to the left
+
 right arrow : turn to the right
+
 up arrow : jump
+
 arrow down : change the face
+
 1 (numeric keypad) : lower the left claw
+
 7 (numeric keypad) : raise left claw
+
 4 (numeric keypad) : close/open the left claw
+
 3 (numeric keypad) : lower the right claw
+
 9 (numeric keypad) : raise right claw
+
 6 (numeric keypad) : close/open the right claw
 
 
