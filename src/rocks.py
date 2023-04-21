@@ -16,6 +16,8 @@ class Rocks(Mesh):
         self.color = (.8, .1, .1)
         self.startTime = glfw.get_time()
 
+        # We create some random parameters for the rock
+
         # Initial position
         self.posX = random.randint(-5, 5)
         self.posY = random.randint(25, 42)
@@ -31,6 +33,7 @@ class Rocks(Mesh):
         self.accelY = -9.81
         self.accelZ = 0
 
+        # Size of the particle
         randomSize = random.uniform(0.05, 0.8)
 
         rock = Sphere(shader, subdivisions, self.color)

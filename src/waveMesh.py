@@ -14,7 +14,7 @@ class WaveMesh(Mesh):
                  kS=(0.8, 0.8, 0.8),
                  s=100.0000):
 
-        # An odd number of points is more convenient
+        # An odd number of points is more convenient for our calculation
         if sizeMesh % 2 == 0:
             sizeMesh += 1
 

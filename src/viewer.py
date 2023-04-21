@@ -8,9 +8,7 @@ from skybox import SkyboxSide
 from waveMesh import WaveMesh
 from craby import Craby
 from rocks import Rocks
-from transform import translate, scale, identity, quaternion
-from keyFrames import KeyFrameControlNode
-from sphere import Sphere
+from transform import translate, scale
 
 
 def main():
