@@ -39,7 +39,7 @@ def main():
 
     viewer.add(generateTerrain.Terrain(terrainShader, lightDir))
 
-    for i in range(25):
+    for i in range(100):
         viewer.add(Rocks(rocksShader, lightDir, subdivisions=1))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
 

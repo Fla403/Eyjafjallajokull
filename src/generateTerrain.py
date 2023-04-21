@@ -13,6 +13,10 @@ from core import Mesh
 def rand(x, z):
     return (0.5 * np.sin(np.dot((x, z), (12.9898, 78.233))*500) * 43758.5453) % 1
 
+def randVolcano(x, z):
+    return (np.sin(0.2*np.dot((x, z), (12.9898, 78.233))) * 43758.5453) % 1
+
+
 
 def terrainPoint(x, z):
     # Adding lots of Gaussian with different parameters
@@ -34,7 +38,7 @@ def terrainPoint(x, z):
            + 0.2*rand(x, z)
            - 2)
     if(height >= 18):
-        height += 0.8*rand(x, z)
+        height += 2*randVolcano(x+rand(x, z), z+rand(x, z))
 
     return height
 

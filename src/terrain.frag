@@ -4,11 +4,11 @@
 uniform vec3 global_color;
 
 uniform vec3 light;
-uniform vec3 k_d = vec3(.7, .7, .7);
-uniform vec3 k_a = vec3(0.8, 0.8, 0.8);
-uniform vec3 k_s = vec3(.4, .4, .4);
+uniform vec3 k_d = vec3(.9, .9, .9);
+uniform vec3 k_a = vec3(0.9, 0.8, 0.8);
+uniform vec3 k_s = vec3(.8, .6, .6);
 
-float s = 1;
+float s = 2;
 uniform vec3 w_camera_position;
 
 // receiving interpolated color for fragment shader
