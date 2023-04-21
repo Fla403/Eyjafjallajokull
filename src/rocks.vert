@@ -4,6 +4,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float time;
+
+//Parameters of the rock
 uniform float posX;
 uniform float posY;
 uniform float posZ;
