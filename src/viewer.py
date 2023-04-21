@@ -3,7 +3,7 @@
 from core import Viewer, Shader, Node
 # from playsound import playsound
 
-import GenerateTerrain
+import generateTerrain
 from skybox import SkyboxSide
 from waveMesh import WaveMesh
 from craby import Craby
@@ -37,7 +37,7 @@ def main():
 
     viewer.add(WaveMesh(lavaShader, 67, lightDir, heightOffset=44, scale=0.2, kD=(0.92, 0.26, 0), kA=(0.7, 0.3, 0), kS=(0.9, 0.35, 0.35), s=1.5))
 
-    viewer.add(GenerateTerrain.Terrain(terrainShader, lightDir))
+    viewer.add(generateTerrain.Terrain(terrainShader, lightDir))
 
     for i in range(25):
         viewer.add(Rocks(rocksShader, lightDir, subdivisions=1))

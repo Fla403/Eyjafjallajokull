@@ -1,3 +1,8 @@
+
+"""
+    Creation of a mesh for animation.
+"""
+
 import OpenGL.GL as GL
 import glfw
 

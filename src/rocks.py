@@ -1,3 +1,8 @@
+
+"""
+    Creation of a rock particle with random parameters for physic animation.
+"""
+
 import glfw
 import random
 

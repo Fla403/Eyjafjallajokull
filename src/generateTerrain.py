@@ -6,7 +6,6 @@
     idée : une grille de points. En chaque point : calcul d'une hauteur
 """
 import OpenGL.GL as GL
-import glfw
 import numpy as np
 from core import Mesh
 
