@@ -303,6 +303,24 @@ class Craby(KeyFrameControlNode):
 
 
     def key_handler(self, key):
+
+        # COMMANDES POUR FAIRE BOUGER CRABY :
+
+        # w : avancer
+        # x : reculer
+        # q : se deplacer sur la gauche
+        # d : se deplacer sur la droite
+        # fleche gauche : se tourner sur la gauche
+        # fleche droite : sse tourner sur la droite
+        # fleche haut : sauter
+        # fleche bas : changer le sourire
+        # 1 (pave numerique) : baisser la pince gauche
+        # 7 (pave numerique) : lever la pince gauche
+        # 4 (pave numerique) : fermer/ouvrir la pince gauche
+        # 3 (pave numerique) : baisser la pince droite
+        # 9 (pave numerique) : lever la pince droite
+        # 6 (pave numerique) : fermer/ouvrir la pince droite
+
         time = glfw.get_time()
 
         if (self.isMoving == True and time >= self.endMove):
@@ -314,7 +332,7 @@ class Craby(KeyFrameControlNode):
 
         if (not self.isMoving):
 
-            if (key == glfw.KEY_UP):
+            if (key == glfw.KEY_UP): 
                 self.isMoving = True
                 self.endMove = time+self.jumpDuration
                 self.addTranslate(time, self.position)
