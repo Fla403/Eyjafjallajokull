@@ -356,14 +356,6 @@ class Craby(KeyFrameControlNode):
                     leg.joint2.addRotate(time+self.jumpDuration, quaternion_from_axis_angle((0,0,1), 0))
                     leg.joint3.addRotate(time+self.jumpDuration, quaternion_from_axis_angle((0,0,1), 0))
 
-            if (key == glfw.KEY_DOWN):
-
-                if (self.isHappy):
-                    self.mouth.transform = identity()
-                else:
-                    self.mouth.transform = rotate((1,0,0), 180) @ translate(0,-1,0)
-                self.isHappy = not self.isHappy
-
             if (key == glfw.KEY_LEFT or key == glfw.KEY_RIGHT):
                 self.isMoving = True
                 self.endMove = time+self.rotateDuration
@@ -387,6 +379,14 @@ class Craby(KeyFrameControlNode):
                 
                 self.addTranslate(time + self.walkDuration, self.position)
                 self.legs_move_animation(time, self.walkDuration)
+
+        if (key == glfw.KEY_DOWN):
+
+                if (self.isHappy):
+                    self.mouth.transform = identity()
+                else:
+                    self.mouth.transform = rotate((1,0,0), 180) @ translate(0,-1,0)
+                self.isHappy = not self.isHappy
 
         if (not self.isLeftClawMoving):
 
