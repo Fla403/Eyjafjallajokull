@@ -48,6 +48,23 @@ def main():
     crabyNode.add(craby)
     viewer.add(crabyNode)
 
+    # Keyboard control for Craby
+    print("\nKeyboard control for Craby :")
+    print("\nw : forward")
+    print("x : move backwards")
+    print("q : move to the left")
+    print("d : move to the right")
+    print("left arrow : turn to the left")
+    print("right arrow : turn to the right")
+    print("up arrow : jump")
+    print("arrow down : change the face")
+    print("1 (numeric keypad) : lower the left claw")
+    print("7 (numeric keypad) : raise left claw")
+    print("4 (numeric keypad) : close/open the left claw")
+    print("3 (numeric keypad) : lower the right claw")
+    print("9 (numeric keypad) : raise right claw")
+    print("6 (numeric keypad) : close/open the right claw")
+
     # start rendering loop
     viewer.run()
 
