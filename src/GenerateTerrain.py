@@ -51,8 +51,8 @@ class Terrain(Mesh):
     """Class for drawing a terrain"""
 
     def __init__(self, shader, lightDir):
-        sizeMesh = 361
-        scale = .5
+        sizeMesh = 271
+        scale = .75
         
         # We need only an odd amount of points on a side
         if sizeMesh % 2 == 0:
