@@ -12,7 +12,6 @@ def midPoint(p1, p2):
 
 def putOnSphere(p):
     d = math.sqrt(p[0]**2 + p[1]**2 + p[2]**2)
-    #return p
     return (p[0]/d, p[1]/d, p[2]/d)
 
 
