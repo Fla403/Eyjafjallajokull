@@ -17,6 +17,8 @@ def putOnSphere(p):
 
 class Sphere(Mesh):
 
+    calculated_sphere = {}
+
     def nb_vertices_on_level(self, level):
 
         if ((level == 1) or (level == self.nb_levels-1)):
@@ -59,8 +61,6 @@ class Sphere(Mesh):
                 first_index += 2*(level-1)
 
             level += 1
-
-        # level == middle_level here
 
         first_index += self.nb_vertices_on_level(self.middle_level)//2
 
@@ -127,84 +127,89 @@ class Sphere(Mesh):
 
         first_index = 1
 
-        new_index = np.array((0,1,2, 0,2,3, 0,3,4, 0,4,1))
+        new_index = [0,1,2, 0,2,3, 0,3,4, 0,4,1]
         level = 1
         while (level < self.middle_level):
-            t = []
             for i in range(4):
-                t = t + [first_index+i*level, first_index+(4+i)*level+i, first_index+(4+i)*level+i+1]
+                new_index += [first_index+i*level, first_index+(4+i)*level+i, first_index+(4+i)*level+i+1]
                 for j in range(level):
                     if ((i < 3) or (j < level-1)):
-                        t = t + [first_index+i*level+j, first_index+(4+i)*level+j+i+1, first_index+i*level+j+1] + [first_index+i*level+j+1, first_index+(4+i)*level+j+i+1, first_index+(4+i)*level+j+i+2]
+                        new_index += [first_index+i*level+j, first_index+(4+i)*level+j+i+1, first_index+i*level+j+1] + [first_index+i*level+j+1, first_index+(4+i)*level+j+i+1, first_index+(4+i)*level+j+i+2]
                     else:
-                        t = t + [first_index+i*level+j, first_index+(4+i)*level+j+i+1, first_index] + [first_index, first_index+(4+i)*level+j+i+1, first_index+4*level]
+                        new_index += [first_index+i*level+j, first_index+(4+i)*level+j+i+1, first_index] + [first_index, first_index+(4+i)*level+j+i+1, first_index+4*level]
 
-            temp = np.array(t)
-            new_index = np.concatenate((new_index, temp))
             first_index += level*4
             level += 1
         
         first_index += self.nb_vertices_on_level(self.middle_level)
 
         while (level < self.nb_levels-2):
-            t = []
             nb_vert_by_side_up = self.nb_vertices_on_level(level)//4
             nb_vert_by_side = self.nb_vertices_on_level(level+1)//4
             for i in range(4):
-                t = t + [first_index+i*nb_vert_by_side, first_index + (i-4)*nb_vert_by_side_up + 1, first_index + (i-4)*nb_vert_by_side_up]
+                new_index += [first_index+i*nb_vert_by_side, first_index + (i-4)*nb_vert_by_side_up + 1, first_index + (i-4)*nb_vert_by_side_up]
                 for j in range(nb_vert_by_side):
                     if (not ((i == 3) and (j == nb_vert_by_side-1))):
-                        t = t + [first_index+i*nb_vert_by_side+j, first_index+i*nb_vert_by_side+j+1, first_index + (i-4)*nb_vert_by_side_up + j+1] + [first_index+i*nb_vert_by_side+j+1, first_index + (i-4)*nb_vert_by_side_up + j+2, first_index + (i-4)*nb_vert_by_side_up + j+1]
+                        new_index += [first_index+i*nb_vert_by_side+j, first_index+i*nb_vert_by_side+j+1, first_index + (i-4)*nb_vert_by_side_up + j+1] + [first_index+i*nb_vert_by_side+j+1, first_index + (i-4)*nb_vert_by_side_up + j+2, first_index + (i-4)*nb_vert_by_side_up + j+1]
                     else:
-                        t = t + [first_index+i*nb_vert_by_side+j, first_index, first_index + (i-4)*nb_vert_by_side_up + j+1] + [first_index, first_index - 4*nb_vert_by_side_up, first_index + (i-4)*nb_vert_by_side_up + j+1]
+                        new_index += [first_index+i*nb_vert_by_side+j, first_index, first_index + (i-4)*nb_vert_by_side_up + j+1] + [first_index, first_index - 4*nb_vert_by_side_up, first_index + (i-4)*nb_vert_by_side_up + j+1]
 
-            temp = np.array(t)
-            new_index = np.concatenate((new_index, temp))
             first_index += nb_vert_by_side*4
             level += 1
 
 
         nb_vert = np.shape(self.vertices)[0]
-        end_index = np.array((nb_vert-1,nb_vert-4,nb_vert-5, nb_vert-1,nb_vert-3,nb_vert-4, nb_vert-1,nb_vert-2,nb_vert-3, nb_vert-1,nb_vert-5,nb_vert-2))
-        new_index = np.concatenate((new_index, end_index))
+        new_index += [nb_vert-1,nb_vert-4,nb_vert-5, nb_vert-1,nb_vert-3,nb_vert-4, nb_vert-1,nb_vert-2,nb_vert-3, nb_vert-1,nb_vert-5,nb_vert-2]
 
-        self.index = new_index
+        self.index = np.array(new_index)
 
 
     def __init__(self, shader, recursion_level, color):
 
         self.color = color
         self.shader = shader
+
+        if (recursion_level in Sphere.calculated_sphere):
+
+            self.vertices = np.copy(Sphere.calculated_sphere[recursion_level][0])
+            self.index = Sphere.calculated_sphere[recursion_level][1]
+            self.nb_levels = Sphere.calculated_sphere[recursion_level][2]
+            self.middle_level = Sphere.calculated_sphere[recursion_level][3]
+
+        else:
         
-        a = 1/math.sqrt(2)
+            a = 1/math.sqrt(2)
 
-        s1 = (0,1,0)
-        s2 = (-a,0,a)
-        s3 = (a,0,a)
-        s4 = (a,0,-a)
-        s5 = (-a,0,-a)
-        s6 = (0,-1,0)
+            s1 = (0,1,0)
+            s2 = (-a,0,a)
+            s3 = (a,0,a)
+            s4 = (a,0,-a)
+            s5 = (-a,0,-a)
+            s6 = (0,-1,0)
 
-        self.vertices = np.array((s1, s2, s3, s4, s5, s6), np.float32)
+            self.vertices = np.array((s1, s2, s3, s4, s5, s6), np.float32)
 
-        t1 = np.array((0, 1, 2), np.uint32)
-        t2 = np.array((0, 2, 3), np.uint32)
-        t3 = np.array((0, 3, 4), np.uint32)
-        t4 = np.array((0, 4, 1), np.uint32)
-        t5 = np.array((5, 1, 4), np.uint32)
-        t6 = np.array((5, 4, 3), np.uint32)
-        t7 = np.array((5, 3, 2), np.uint32)
-        t8 = np.array((5, 2, 1), np.uint32)
+            t1 = np.array((0, 1, 2), np.uint32)
+            t2 = np.array((0, 2, 3), np.uint32)
+            t3 = np.array((0, 3, 4), np.uint32)
+            t4 = np.array((0, 4, 1), np.uint32)
+            t5 = np.array((5, 1, 4), np.uint32)
+            t6 = np.array((5, 4, 3), np.uint32)
+            t7 = np.array((5, 3, 2), np.uint32)
+            t8 = np.array((5, 2, 1), np.uint32)
 
-        self.index = np.concatenate((t1, t2, t3, t4, t5, t6, t7, t8))
+            self.index = np.concatenate((t1, t2, t3, t4, t5, t6, t7, t8))
 
-        self.nb_levels = 3
-        self.middle_level = 1
+            self.nb_levels = 3
+            self.middle_level = 1
 
-        for i in range(recursion_level):
-            self.precize()
+            for i in range(recursion_level):
+                self.precize()
 
-        self.index_triangles()
+            self.index_triangles()
+
+            Sphere.calculated_sphere[recursion_level] = [np.copy(self.vertices), self.index, self.nb_levels, self.middle_level]
+
 
         super().__init__(shader, attributes=dict(position= self.vertices), index=self.index, global_color=self.color)
 

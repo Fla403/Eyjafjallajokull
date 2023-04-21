@@ -353,7 +353,7 @@ class Viewer(Node):
         glfw.make_context_current(self.win)
 
         # initialize trackball
-        self.trackball = Trackball()
+        self.trackball = Trackball(distance=92., yaw=0.0, pitch=12.0, roll=-15.0)
         self.mouse = (0, 0)
 
         # register event handlers

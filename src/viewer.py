@@ -28,7 +28,6 @@ def main():
     oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")  #ocean or oceanOpti can be used for two different color implementation
     lavaShader = Shader("lava.vert", "lava.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
-    crabyShader = Shader("craby.vert", "craby.frag")
     rocksShader = Shader("rocks.vert", "rocks.frag")
 
     # add all the objects of the scene
