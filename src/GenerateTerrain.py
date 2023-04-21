@@ -109,7 +109,7 @@ class Terrain(Mesh):
             k_a=('COLOR_AMBIENT', (0.5, .5, .5)),
             s=('SHININESS', 16.),
         )
-        super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms)
+        super().__init__(shader, attributes=attributes, index=index, uniforms=uniforms, light=lightDir)
 
     def draw(self, **_args):
         GL.glEnable(GL.GL_DEPTH_TEST)

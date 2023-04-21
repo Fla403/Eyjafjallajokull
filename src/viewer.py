@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from core import Viewer, Shader, Node
-from playsound import playsound
+#from playsound import playsound
 
 import GenerateTerrain
 from skybox import SkyboxSide
@@ -25,10 +25,10 @@ def main():
 
     # creation of the shaders
     skyboxShader = Shader("skybox.vert", "skybox.frag")
-    oceanShader = Shader("ocean.vert", "ocean.frag")
+    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")  #ocean or oceanOpti can be used for two different color implementation
     lavaShader = Shader("lava.vert", "lava.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
-    crabyShader = Shader("color.vert", "color.frag")
+    crabyShader = Shader("craby.vert", "craby.frag")
     rocksShader = Shader("rocks.vert", "rocks.frag")
 
     # add all the objects of the scene
@@ -43,14 +43,9 @@ def main():
 
     viewer.add(WaveMesh(lavaShader, 67, lightDir, heightOffset=44, scale=0.2, kD=(0.92, 0.26, 0), kA=(0.7, 0.3, 0), kS=(0.9, 0.35, 0.35), s=1.5))
 
-    viewer.add(GenerateTerrain.Terrain(terrainShader))
+    viewer.add(GenerateTerrain.Terrain(terrainShader, lightDir))
 
-    """sphere = Sphere(crabyShader, 3, (0.2,0.2,0.2))
-    node = Node(transform=scale(0.1,0.1,0.1))
-    node.add(sphere)
-    viewer.add(node)"""
-
-    for i in range (100):
+    for i in range (200):
         viewer.add(Rocks(rocksShader, lightDir))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
 
@@ -59,27 +54,10 @@ def main():
     crabyNode.add(craby)
     viewer.add(crabyNode)
 
-    """translate_keys = {0: vec(0,0,0),
-                        20: vec(0,5,0),
-                        24: vec(0,10,0),
-                        26: vec(0,15,0),
-                        28: vec(0,20,0),
-                        30: vec(0,25,0)}
-    rotate_keys = {0: quaternion(),
-                        10: quaternion()}
-    scale_keys = {0: vec(1,1,1),
-                        10: vec(1,1,1)}
-
-    crabyAnimatedNode = KeyFrameControlNode(translate_keys, rotate_keys, scale_keys)
-    crabyAnimatedNode.add(craby)
-    viewer.add(crabyAnimatedNode)
-
-    crabyAnimatedNode.addTranslate(40, vec(0,0,0))"""
-
     # start rendering loop
     viewer.run()
 
 
 if __name__ == '__main__':
-    playsound("CrabRave.mp3", False)
+    #playsound("CrabRave.mp3", False)
     main()

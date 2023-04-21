@@ -6,14 +6,14 @@ import numpy as np
 from core import *
 import math
 from transform import translate, identity, rotate, scale, quaternion_from_axis_angle, quaternion
-from sphere import Sphere, deform
+from sphere import Sphere
 from keyFrames import KeyFrameControlNode
 
 
 class Leg(KeyFrameControlNode):
     def __init__(self):
         super().__init__()
-        crabyShader = Shader("color.vert", "color.frag")
+        crabyShader = Shader("craby.vert", "craby.frag")
 
         sphere1 = Sphere(crabyShader, 3, (0.85, 0.45, 0))
         sphere1.transformByMatrix(scale(1,0.2,0.2))
@@ -60,7 +60,7 @@ class Leg(KeyFrameControlNode):
 class Body(KeyFrameControlNode):
     def __init__(self):
         super().__init__()
-        crabyShader = Shader("color.vert", "color.frag")
+        crabyShader = Shader("craby.vert", "craby.frag")
 
         sphere = Sphere(crabyShader, 3, (.9, 0.5, 0, 1))
         sphere.transformByMatrix(scale(1,0.5,1))
@@ -72,7 +72,7 @@ class Eye(KeyFrameControlNode):
 
     def __init__(self):
         super().__init__()
-        crabyShader = Shader("color.vert", "color.frag")
+        crabyShader = Shader("craby.vert", "craby.frag")
 
 
         sphere1 = Sphere(crabyShader, 3, (0.05,0.05,0.05))
@@ -100,7 +100,7 @@ class Mouth(Node):
     def __init__(self):
         super().__init__()
 
-        crabyShader = Shader("color.vert", "color.frag")
+        crabyShader = Shader("craby.vert", "craby.frag")
 
         sphere = Sphere(crabyShader, 3, (0.05,0.05,0.05))
         sphere.transformByMatrix(scale(1,0.15,0.15))
@@ -111,14 +111,17 @@ class Mouth(Node):
 class Claw(KeyFrameControlNode):
     def __init__(self):
         super().__init__()
-        crabyShader = Shader("color.vert", "color.frag")
+        crabyShader = Shader("craby.vert", "craby.frag")
 
         sphere1 = Sphere(crabyShader, 3, (0.85, 0.45, 0))
         sphere1.transformByMatrix(scale(1,0.3,0.3))
         sphere1.modelling(flattening=0.8, mitigation_pos=0.95, mitigation_neg=0.5, inflation_pos=0.5, inflation_neg=0.5, xMax=1, yMax=0.3, zMax=0.3)
 
-        clawNode1 = Node(transform= rotate((0,0,1), 50) @ scale(0.8) @ translate(0.8,-0.7,0))
+        clawNode1 = Node(transform= rotate((0,0,1), 60) @ scale(0.8) @ translate(0.8,-0.7,0))
         clawNode1.add(sphere1)
+
+        self.joint1 = KeyFrameControlNode()
+        self.joint1.add(clawNode1)
 
         sphere2 = Sphere(crabyShader, 4, (0.8, 0.4, 0))
         sphere2.transformByMatrix(scale(1,0.3,0.5))
@@ -127,9 +130,9 @@ class Claw(KeyFrameControlNode):
         clawNode2 = Node(transform=translate(0.8,0.7,0))
         clawNode2.add(sphere2)
         
-        joint1 = Node(transform= scale(0.9) @ rotate((0,0,1), 180))
-        joint1.add(clawNode1)
-        joint1.add(clawNode2)
+        link1 = Node(transform= scale(0.9) @ rotate((0,0,1), 180))
+        link1.add(self.joint1)
+        link1.add(clawNode2)
 
         sphere3 = Sphere(crabyShader, 3, (0.90, 0.5, 0))
         sphere3.transformByMatrix(scale(1,0.15,0.15))
@@ -138,9 +141,9 @@ class Claw(KeyFrameControlNode):
         clawNode3 = Node(transform=translate(0.8,-0.45,0))
         clawNode3.add(sphere3)
 
-        joint2 = Node(transform=rotate((0,0,1), 90) @ translate(-1.6,0,0))
-        joint2.add(joint1)
-        joint2.add(clawNode3)
+        link2 = Node(transform=rotate((0,0,1), 90) @ translate(-1.6,0,0))
+        link2.add(link1)
+        link2.add(clawNode3)
 
         sphere4 = Sphere(crabyShader, 3, (0.95, 0.55, 0))
         sphere4.transformByMatrix(scale(1,0.2,0.2))
@@ -149,11 +152,14 @@ class Claw(KeyFrameControlNode):
         clawNode4 = Node(transform=scale(1.1) @ translate(0.8,-0.1,0))
         clawNode4.add(sphere4)
 
-        joint3 = Node(transform=translate(-1.8,0.02,0))
-        joint3.add(joint2)
-        joint3.add(clawNode4)
+        link3 = Node(transform=translate(-1.8,0.02,0))
+        link3.add(link2)
+        link3.add(clawNode4)
 
-        self.add(joint3)
+        self.joint2 = KeyFrameControlNode()
+        self.joint2.add(link3)
+
+        self.add(self.joint2)
 
 
 class Craby(KeyFrameControlNode):
@@ -161,15 +167,34 @@ class Craby(KeyFrameControlNode):
         super().__init__()
 
 
-        self.isMoving = False
-        self.endMove = 0
         self.elevation = 2
-        self.jumpDuration = 0.8
-        self.rotation = 0
+        self.walkDistance = 1
         self.rotationDiff = 15
+        self.clawRotationMin = -40
+        self.clawRotationMax = 130
+        self.clawRotationDiff = 10
+        
+        self.jumpDuration = 0.8
+        self.walkDuration = 0.2
         self.rotateDuration = 0.2
+        self.clawDuration = 0.1
+        self.clawMoveDuration = 0.1
+
+        self.isMoving = False
+        self.isLeftClawMoving = False
+        self.isLeftClawOpen = True
+        self.isRightClawMoving = False
+        self.isRightClawOpen = True
+        
+        self.endMove = 0
+        self.endLeftClawMove = 0
+        self.endRightClawMove = 0
+
+        self.position = vec(0,0,0)
+        self.rotation = 0
+        self.clawLeftRotation = 0
+        self.clawRightRotation = 0
         self.isHappy = False
-        self.isClawTight = False
 
 
         self.body = Body()
@@ -236,11 +261,11 @@ class Craby(KeyFrameControlNode):
         legs.add(legR4Node)
 
         self.clawL = Claw()
-        clawLNode = Node(transform=translate(-0.6,-0.1,0.4)  @ rotate((0,1,0), 20) @ scale(0.25) @ rotate((0,0,1), 45) @ rotate((1,0,0), 310))
+        clawLNode = Node(transform=translate(0.6,-0.1,0.4) @ rotate((0,1,0), -20) @ scale(0.25) @ rotate((0,0,1), -45) @ rotate((1,0,0), 310) @ rotate((0,1,0), 180))
         clawLNode.add(self.clawL)
 
         self.clawR = Claw()
-        clawRNode = Node(transform=translate(0.6,-0.1,0.4) @ rotate((0,1,0), -20) @ scale(0.25) @ rotate((0,0,1), -45) @ rotate((1,0,0), 310) @ rotate((0,1,0), 180))
+        clawRNode = Node(transform=translate(-0.6,-0.1,0.4)  @ rotate((0,1,0), 20) @ scale(0.25) @ rotate((0,0,1), 45) @ rotate((1,0,0), 310))
         clawRNode.add(self.clawR)
 
         claws = Node()
@@ -252,40 +277,67 @@ class Craby(KeyFrameControlNode):
         self.add(legs)
         self.add(claws)
 
+    def legs_move_animation(self, time, duration):
+
+        for leg in [self.legL1, self.legL3, self.legR2, self.legR4]:
+            leg.joint1.addRotate(time, quaternion())
+            leg.joint2.addRotate(time, quaternion())
+            leg.joint3.addRotate(time, quaternion())
+            leg.joint1.addRotate(time+duration*1/3, quaternion_from_axis_angle((0,0,1), 20))
+            leg.joint2.addRotate(time+duration*1/3, quaternion_from_axis_angle((0,0,1), -10))
+            leg.joint3.addRotate(time+duration*1/3, quaternion_from_axis_angle((0,0,1), -10))
+            leg.joint1.addRotate(time+duration*2/3, quaternion())
+            leg.joint2.addRotate(time+duration*2/3, quaternion())
+            leg.joint3.addRotate(time+duration*2/3, quaternion())
+
+        for leg in [self.legL2,self.legL4, self.legR1, self.legR3]:
+            leg.joint1.addRotate(time+duration/3, quaternion())
+            leg.joint2.addRotate(time+duration/3, quaternion())
+            leg.joint3.addRotate(time+duration/3, quaternion())
+            leg.joint1.addRotate(time+duration*2/3, quaternion_from_axis_angle((0,0,1), 20))
+            leg.joint2.addRotate(time+duration*2/3, quaternion_from_axis_angle((0,0,1), -10))
+            leg.joint3.addRotate(time+duration*2/3, quaternion_from_axis_angle((0,0,1), -10))
+            leg.joint1.addRotate(time+duration, quaternion())
+            leg.joint2.addRotate(time+duration, quaternion())
+            leg.joint3.addRotate(time+duration, quaternion())
+
+
     def key_handler(self, key):
         time = glfw.get_time()
 
         if (self.isMoving == True and time >= self.endMove):
             self.isMoving = False
+        if (self.isLeftClawMoving == True and time >= self.endLeftClawMove):
+            self.isLeftClawMoving = False
+        if (self.isRightClawMoving == True and time >= self.endRightClawMove):
+            self.isRightClawMoving = False
 
         if (not self.isMoving):
 
             if (key == glfw.KEY_UP):
                 self.isMoving = True
                 self.endMove = time+self.jumpDuration
-                self.addTranslate(time, vec(0,0,0))
-                #self.addTranslate(time+self.jumpDuration/2, vec(0,self.elevation,0))
-                self.addTranslate(time+self.jumpDuration/3, vec(0,-0.25,0))
-                self.addTranslate(time+self.jumpDuration*2/3, vec(0,self.elevation,0))
-                self.addTranslate(time+self.jumpDuration, vec(0,0,0))
+                self.addTranslate(time, self.position)
+                self.addTranslate(time+self.jumpDuration/3, vec(self.position[0],self.position[1]-0.25,self.position[2]))
+                self.addTranslate(time+self.jumpDuration*2/3, vec(self.position[0],self.position[1]+self.elevation,self.position[2]))
+                self.addTranslate(time+self.jumpDuration, self.position)
                 for leg in [self.legL1, self.legL2, self.legL3, self.legL4, self.legR1, self.legR2, self.legR3, self.legR4]:
                     leg.joint1.addRotate(time, quaternion())
                     leg.joint2.addRotate(time, quaternion())
                     leg.joint3.addRotate(time, quaternion())
                     leg.joint1.addRotate(time+self.jumpDuration/3, quaternion_from_axis_angle((0,0,1), 0))
-                    leg.joint2.addRotate(time+self.jumpDuration/3, quaternion_from_axis_angle((0,0,1), 30))
-                    leg.joint3.addRotate(time+self.jumpDuration/3, quaternion_from_axis_angle((0,0,1), -30))
-                    leg.joint1.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), -40))
-                    leg.joint2.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint3.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), 50))
-                    leg.joint1.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), -40))
-                    leg.joint2.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint3.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), 50))
+                    leg.joint2.addRotate(time+self.jumpDuration/3, quaternion_from_axis_angle((0,0,1), 40))
+                    leg.joint3.addRotate(time+self.jumpDuration/3, quaternion_from_axis_angle((0,0,1), -40))
+                    leg.joint1.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), -50))
+                    leg.joint2.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), -20))
+                    leg.joint3.addRotate(time+self.jumpDuration*4/9, quaternion_from_axis_angle((0,0,1), 60))
+                    leg.joint1.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), -50))
+                    leg.joint2.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), -20))
+                    leg.joint3.addRotate(time+self.jumpDuration*8/9, quaternion_from_axis_angle((0,0,1), 60))
                     leg.joint1.addRotate(time+self.jumpDuration, quaternion_from_axis_angle((0,0,1), 0))
                     leg.joint2.addRotate(time+self.jumpDuration, quaternion_from_axis_angle((0,0,1), 0))
                     leg.joint3.addRotate(time+self.jumpDuration, quaternion_from_axis_angle((0,0,1), 0))
 
-            
             if (key == glfw.KEY_DOWN):
 
                 if (self.isHappy):
@@ -300,36 +352,78 @@ class Craby(KeyFrameControlNode):
                 self.addRotate(time, quaternion_from_axis_angle((0,1,0), self.rotation))
                 self.rotation = self.rotation + (self.rotationDiff if key == glfw.KEY_LEFT else -self.rotationDiff)
                 self.addRotate(time+self.rotateDuration, quaternion_from_axis_angle((0,1,0), self.rotation))
-                for leg in [self.legL1, self.legL3, self.legR2, self.legR4]:
-                    leg.joint1.addRotate(time, quaternion())
-                    leg.joint2.addRotate(time, quaternion())
-                    leg.joint3.addRotate(time, quaternion())
-                    leg.joint1.addRotate(time+self.rotateDuration*1/3, quaternion_from_axis_angle((0,0,1), 20))
-                    leg.joint2.addRotate(time+self.rotateDuration*1/3, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint3.addRotate(time+self.rotateDuration*1/3, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint1.addRotate(time+self.rotateDuration*2/3, quaternion())
-                    leg.joint2.addRotate(time+self.rotateDuration*2/3, quaternion())
-                    leg.joint3.addRotate(time+self.rotateDuration*2/3, quaternion())
+                self.legs_move_animation(time, self.rotateDuration)
+                
+            if (key == glfw.KEY_Z or key == glfw.KEY_X or key == glfw.KEY_A or key == glfw.KEY_D):
+                self.isMoving = True
+                self.endMove = time+self.walkDuration
+                self.addTranslate(time, self.position)
+                if (key == glfw.KEY_Z):
+                    self.position = vec(self.position[0] + self.walkDistance*math.sin(math.radians(self.rotation)), self.position[1], self.position[2] + self.walkDistance*math.cos(math.radians(self.rotation)))
+                elif (key == glfw.KEY_X):
+                    self.position = vec(self.position[0] - self.walkDistance*math.sin(math.radians(self.rotation)), self.position[1], self.position[2] - self.walkDistance*math.cos(math.radians(self.rotation)))
+                elif (key == glfw.KEY_A):
+                    self.position = vec(self.position[0] + self.walkDistance*math.cos(math.radians(self.rotation)), self.position[1], self.position[2] - self.walkDistance*math.sin(math.radians(self.rotation)))
+                elif (key == glfw.KEY_D):
+                    self.position = vec(self.position[0] - self.walkDistance*math.cos(math.radians(self.rotation)), self.position[1], self.position[2] + self.walkDistance*math.sin(math.radians(self.rotation)))
+                
+                self.addTranslate(time + self.walkDuration, self.position)
+                self.legs_move_animation(time, self.walkDuration)
 
-                for leg in [self.legL2,self.legL4, self.legR1, self.legR3]:
-                    leg.joint1.addRotate(time+self.rotateDuration/3, quaternion())
-                    leg.joint2.addRotate(time+self.rotateDuration/3, quaternion())
-                    leg.joint3.addRotate(time+self.rotateDuration/3, quaternion())
-                    leg.joint1.addRotate(time+self.rotateDuration*2/3, quaternion_from_axis_angle((0,0,1), 20))
-                    leg.joint2.addRotate(time+self.rotateDuration*2/3, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint3.addRotate(time+self.rotateDuration*2/3, quaternion_from_axis_angle((0,0,1), -10))
-                    leg.joint1.addRotate(time+self.rotateDuration, quaternion())
-                    leg.joint2.addRotate(time+self.rotateDuration, quaternion())
-                    leg.joint3.addRotate(time+self.rotateDuration, quaternion())
+        if (not self.isLeftClawMoving):
 
-            """if (key == glfw.KEY_C):
-                for claw in [self.clawL, self.clawR]:
-                    if (self.isClawTight):"""
-                        
+            if (key == glfw.KEY_KP_4):
+                self.isLeftClawMoving = True
+                self.endLeftClawMove = time+self.clawDuration
+                if (self.isLeftClawOpen):
+                    self.clawL.joint1.addRotate(time, quaternion())
+                    self.clawL.joint1.addRotate(time+self.clawDuration, quaternion_from_axis_angle((0,0,1), -33))
+                else:
+                    self.clawL.joint1.addRotate(time, quaternion_from_axis_angle((0,0,1), -33))
+                    self.clawL.joint1.addRotate(time+self.clawDuration, quaternion())
+                self.isLeftClawOpen = not self.isLeftClawOpen
 
-        """self.elevation += 1 * int(key == glfw.KEY_UP)
-        self.elevation -= 1 * int(key == glfw.KEY_DOWN)
-        self.transform = translate(0, self.elevation, 0)"""
+            if (key == glfw.KEY_KP_1 and self.clawLeftRotation > self.clawRotationMin):
+                self.isLeftClawMoving = True
+                self.endLeftClawMove = time+self.clawMoveDuration
+                self.clawL.addRotate(time, quaternion_from_axis_angle((1,-0.8,0), self.clawLeftRotation))
+                self.clawLeftRotation -= self.clawRotationDiff
+                self.clawL.addRotate(time+self.clawMoveDuration, quaternion_from_axis_angle((1,-0.8,0), self.clawLeftRotation))
+
+            if (key == glfw.KEY_KP_7 and self.clawLeftRotation < self.clawRotationMax):
+                self.isLeftClawMoving = True
+                self.endLeftClawMove = time+self.clawMoveDuration
+                self.clawL.addRotate(time, quaternion_from_axis_angle((1,-0.8,0), self.clawLeftRotation))
+                self.clawLeftRotation += self.clawRotationDiff
+                self.clawL.addRotate(time+self.clawMoveDuration, quaternion_from_axis_angle((1,-0.8,0), self.clawLeftRotation))
+
+        if (not self.isRightClawMoving):
+
+            if (key == glfw.KEY_KP_6):
+                self.isRightClawMoving = True
+                self.endRightClawMove = time+self.clawDuration
+                if (self.isRightClawOpen):
+                    self.clawR.joint1.addRotate(time, quaternion())
+                    self.clawR.joint1.addRotate(time+self.clawDuration, quaternion_from_axis_angle((0,0,1), -33))
+                else:
+                    self.clawR.joint1.addRotate(time, quaternion_from_axis_angle((0,0,1), -33))
+                    self.clawR.joint1.addRotate(time+self.clawDuration, quaternion())
+                self.isRightClawOpen = not self.isRightClawOpen
+
+            if (key == glfw.KEY_KP_3 and self.clawRightRotation < -self.clawRotationMin):
+                self.isRightClawMoving = True
+                self.endRightClawMove = time+self.clawMoveDuration
+                self.clawR.addRotate(time, quaternion_from_axis_angle((1,-0.8,0), self.clawRightRotation))
+                self.clawRightRotation += self.clawRotationDiff
+                self.clawR.addRotate(time+self.clawMoveDuration, quaternion_from_axis_angle((1,-0.8,0), self.clawRightRotation))
+
+            if (key == glfw.KEY_KP_9 and self.clawRightRotation > -self.clawRotationMax):
+                self.isRightClawMoving = True
+                self.endRightClawMove = time+self.clawMoveDuration
+                self.clawR.addRotate(time, quaternion_from_axis_angle((1,-0.8,0), self.clawRightRotation))
+                self.clawRightRotation -= self.clawRotationDiff
+                self.clawR.addRotate(time+self.clawMoveDuration, quaternion_from_axis_angle((1,-0.8,0), self.clawRightRotation))
+
         super().key_handler(key)
 
 

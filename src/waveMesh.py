@@ -7,7 +7,7 @@ import numpy as np
 
 class WaveMesh(Mesh):
     def __init__(self, shader, sizeMesh, lightDir,
-                 heightOffset=5,
+                 heightOffset=8.5,
                  scale=1,
                  kD=(0.0000, 0.6000, 0.6000),
                  kA=(0.0000, 0.2000, 0.2000),
