@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from core import Viewer, Shader, Node
-#from playsound import playsound
+# from playsound import playsound
 
 import GenerateTerrain
 from skybox import SkyboxSide
@@ -13,10 +13,7 @@ from keyFrames import KeyFrameControlNode
 from sphere import Sphere
 
 
-
-
 def main():
-
     # creation of the viewer
     viewer = Viewer()
 
@@ -25,7 +22,7 @@ def main():
 
     # creation of the shaders
     skyboxShader = Shader("skybox.vert", "skybox.frag")
-    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")  #ocean or oceanOpti can be used for two different color implementation
+    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")  # ocean or oceanOpti can be used for two different color implementation
     lavaShader = Shader("lava.vert", "lava.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
     rocksShader = Shader("rocks.vert", "rocks.frag")
@@ -44,12 +41,12 @@ def main():
 
     viewer.add(GenerateTerrain.Terrain(terrainShader, lightDir))
 
-    for i in range (200):
-        viewer.add(Rocks(rocksShader, lightDir))
+    for i in range(25):
+        viewer.add(Rocks(rocksShader, lightDir, subdivisions=1))
         viewer.add(Rocks(rocksShader, lightDir, kD=(0.5, 0.1, 0.1), kA=(0.2, 0.2, 0.2), kS=(0.3, 0.1, 0.1)))
 
     craby = Craby()
-    crabyNode = Node(transform=translate(28,8,58)@scale(5))
+    crabyNode = Node(transform=translate(28, 8, 58) @ scale(5))
     crabyNode.add(craby)
     viewer.add(crabyNode)
 
@@ -58,5 +55,5 @@ def main():
 
 
 if __name__ == '__main__':
-    #playsound("CrabRave.mp3", False)
+    # playsound("CrabRave.mp3", False)
     main()

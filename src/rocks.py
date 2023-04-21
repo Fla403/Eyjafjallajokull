@@ -8,6 +8,7 @@ from sphere import Sphere
 class Rocks(Mesh):
 
     def __init__(self, shader, lightDir,
+                 subdivisions=3,
                  kD=(0.92, 0.1, 0),
                  kA=(0.8, 0.2, 0),
                  kS=(0.95, 0.7, 0.7),
@@ -30,9 +31,9 @@ class Rocks(Mesh):
         self.accelY = -9.81
         self.accelZ = 0
 
-        randomSize = random.uniform(0.05, 0.5)
+        randomSize = random.uniform(0.05, 0.8)
 
-        rock = Sphere(shader, 3, self.color)
+        rock = Sphere(shader, subdivisions, self.color)
         attributes = dict(position=rock.vertices*randomSize)
 
         super().__init__(shader, attributes=attributes, index=rock.index, global_color=self.color, time=0, light=lightDir,
