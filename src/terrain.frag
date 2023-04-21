@@ -35,8 +35,8 @@ float alphaFog(float dist) {
 void main() {
     vec3 n = normalize(w_normal);
     vec3 l = normalize(-light);
-    vec3 r = reflect(-l, n);
-    vec3 v = normalize(w_camera_position - w_position);
+    vec3 r = reflect(l, n);
+    vec3 v = normalize(w_position - w_camera_position);
 
     vec3 diffuse_color = k_d * max(dot(n, l), 0);
     vec3 specular_color = k_s * pow(max(dot(r, v), 0), s);
