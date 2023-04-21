@@ -31,13 +31,13 @@ def terrainPoint(x, z):
            + np.exp(-((x+25)*(x+25) + (z-35)*(z-35))/50)*12
            + np.exp(-((x+22)*(x+22) + (z-45)*(z-45))/10)*8
            + np.exp(-((x-22)*(x-22) + (z+45)*(z+45))/1000)*3
-           + 0.3*rand(x, z)
+        #    + 0.3*rand(x, z)
            - 2)
     # if(x*x + z*z >= 12000):
     #     # height += rand(x, z)
     #     height -= 15
-    if(height >= 19):
-        height += 1.2*rand(x, z)
+    # if(height >= 19):
+        # height += 1.2*rand(x, z)
 
     return height
 
@@ -50,7 +50,7 @@ def normalize(x, y, z):
 class Terrain(Mesh):
     """Class for drawing a terrain"""
 
-    def __init__(self, shader):
+    def __init__(self, shader, lightDir):
         sizeMesh = 361
         scale = .5
         

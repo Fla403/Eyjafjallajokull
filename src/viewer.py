@@ -39,7 +39,7 @@ def main():
     viewer.add(SkyboxSide(skyboxShader, "skyboxSunset/bottom.png", 5))
     viewer.add(SkyboxSide(skyboxShader, "skyboxSunset/top.png", 6))
 
-    viewer.add(WaveMesh(oceanShader, 1551, lightDir))
+    viewer.add(WaveMesh(oceanShader, 551, lightDir))
 
     viewer.add(WaveMesh(lavaShader, 67, lightDir, heightOffset=44, scale=0.2, kD=(0.92, 0.26, 0), kA=(0.7, 0.3, 0), kS=(0.9, 0.35, 0.35), s=1.5))
 
