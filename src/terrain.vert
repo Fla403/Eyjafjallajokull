@@ -12,24 +12,11 @@ uniform mat4 model;
 
 // interpolated color for fragment shader, intialized at vertices
 out vec3 fragment_color;
-out vec3 w_position, w_normal;   // in world coordinates
+out vec3 w_position;
+out vec3 w_normal;   // in world coordinates
 
 float rand(vec2 co) {
     return fract(0.5*sin(0.02*dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-float alphaFog(float dist) {
-    float fogMin = 100.0;
-    float fogMax = 600.0;
-
-    if(dist < fogMin) {
-        return 0.0;
-    }
-    if(dist > fogMax) {
-        return 1.0;
-    }
-
-    return 1 - (fogMax - dist)/(fogMax - fogMin);
 }
 
 void main() {
@@ -58,37 +45,24 @@ void main() {
     //                 + rand(pos)
     //                 - 3;
     
-    vec3 beach = vec3(.60, .50, 0);
+    vec3 beach = vec3(.7578, .6953, .2);
     vec3 grass = vec3(0, .2, 0);
-    vec3 volcanoTop = vec3(0.5, 0.01, 0.01);
     vec3 volcano = vec3(.1, .1, .1);
 
-    float coeff = .6;
-
     if(finalPosition.y > 18) {
-        fragment_color = volcano*coeff;
+        fragment_color = volcano;
     }
     else if(finalPosition.y > 6) {
-        fragment_color = grass*coeff;
+        fragment_color = grass*0.7;
     }
     else {
-        fragment_color = beach*coeff;
+        fragment_color = beach*0.4;
     }
 
     vec4 w_position4 = model * vec4(finalPosition, 1.0);
-    gl_Position = projection * view * model *w_position4;
     w_position = w_position4.xyz / w_position4.w;
 
-    mat3 nit_matrix = transpose(inverse(mat3(model)));
-    w_normal = normalize(nit_matrix * normal);
+    w_normal = (model * vec4(normal, 1)).xyz / (model * vec4(normal, 1)).w;
 
-    // vec3 cameraPosition;
-    // vec4 cv = vec4(0, 0, 0, 1);
-    
-    // cameraPosition = vec3(inverse(view)*cv);
-
-    // float d = distance(position, cameraPosition);
-    // float alpha = alphaFog(d);
-    // vec3 fogColor = vec3(0.5, 0.5, 0.5);
-    // fragment_color = mix(fragment_color, fogColor, alpha);
+    gl_Position = projection * view * model * w_position4;
 }
