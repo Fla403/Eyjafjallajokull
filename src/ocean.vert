@@ -120,8 +120,8 @@ void main() {
 
     // We put the wave under the island
     thirdPosition.y -= exp(-(thirdPosition.x*thirdPosition.x + thirdPosition.z*thirdPosition.z)/500)*50000;
-    if (thirdPosition.y < -10){
-        thirdPosition.y = -10;
+    if (thirdPosition.y < -1){
+        thirdPosition.y = -1;
     }
 
     w_normal = (model * vec4(normal, 1)).xyz / (model * vec4(normal, 1)).w;

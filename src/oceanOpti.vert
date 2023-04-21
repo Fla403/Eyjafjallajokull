@@ -57,16 +57,16 @@ void main() {
 
     // Initialize the coefficients of the first wave
     float firstWavelength = 35;
-    float firstSteepness = 0.45; //Must be between 0 and 1
+    float firstSteepness = 0.4; //Must be between 0 and 1
     vec2 firstDirection = normalize(vec2(1, 1));
     // Initialize the coefficients of the second wave
     float secondWavelength = 28;
-    float secondSteepness = 0.25; //Must be between 0 and 1
+    float secondSteepness = 0.35; //Must be between 0 and 1
     vec2 secondDirection = normalize(vec2(1, 0.6));
     // Initialize the coefficients of the second wave
-    float thirdWavelength = 18;
-    float thirdSteepness = 0.15; //Must be between 0 and 1
-    vec2 thirdDirection = normalize(vec2(1, 1.3));
+    float thirdWavelength = 150;
+    float thirdSteepness = 0.2; //Must be between 0 and 1
+    vec2 thirdDirection = normalize(vec2(1, 1.5));
 
 
     //---------- Compute the first wave ----------
@@ -92,9 +92,9 @@ void main() {
     vec3 normal = normalize(cross(binormal, tangent));
 
     // We put the wave under the island
-    thirdPosition.y -= exp(-(thirdPosition.x*thirdPosition.x + thirdPosition.z*thirdPosition.z)/500)*50000;
-    if (thirdPosition.y < -10){
-        thirdPosition.y = -10;
+    thirdPosition.y -= exp(-(thirdPosition.x*thirdPosition.x + thirdPosition.z*thirdPosition.z)/600)*500000;
+    if (thirdPosition.y < -1){
+        thirdPosition.y = -1;
     }
 
     w_normal = (model * vec4(normal, 1)).xyz / (model * vec4(normal, 1)).w;
