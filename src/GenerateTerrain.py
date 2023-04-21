@@ -50,9 +50,9 @@ def normalize(x, y, z):
 class Terrain(Mesh):
     """Class for drawing a terrain"""
 
-    def __init__(self, shader, lightDir):
-        sizeMesh = 181
-        scale = 1
+    def __init__(self, shader):
+        sizeMesh = 361
+        scale = .5
         
         # We need only an odd amount of points on a side
         if sizeMesh % 2 == 0:

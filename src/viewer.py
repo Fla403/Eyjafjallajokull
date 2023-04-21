@@ -25,7 +25,7 @@ def main():
 
     # creation of the shaders
     skyboxShader = Shader("skybox.vert", "skybox.frag")
-    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")
+    oceanShader = Shader("oceanOpti.vert", "oceanOpti.frag")  #ocean or oceanOpti can be used for two different color implementation
     lavaShader = Shader("lava.vert", "lava.frag")
     terrainShader = Shader("terrain.vert", "terrain.frag")
     rocksShader = Shader("rocks.vert", "rocks.frag")
